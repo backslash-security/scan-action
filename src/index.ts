@@ -1,9 +1,9 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as process from 'process';
-import { AfterScanResponse, Finding, FullOrDiff, PolicyCI, PolicyCategory, StartScanResponse } from './types'
-import { getScanFinalResult, getScanStatus, setAuthToken, startScan } from './http'
-import { extractConnectorProviderFromUri, extractOrganizationFromUri, printSortedFindings, sleep, sortFindingsByType, specialLog } from './util';
+import { getScanFinalResult, getScanStatus, setAuthToken, startScan } from './http';
+import { PolicyCI, PolicyCategory, StartScanResponse } from './types';
+import { extractConnectorProviderFromUri, printSortedFindings, sleep, sortFindingsByType, specialLog } from './util';
 
 
 async function run() {
