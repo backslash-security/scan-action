@@ -266,8 +266,7 @@ const combineColumns = (finding) => {
         case types_1.PolicyCategory['VULNERABLE_OSS_PACKAGES']:
             const introducedThroughOutput = finding.introducedThrough ? `\n\nIntroduced through:\n${finding.introducedThrough.split('\n').slice(0, 3).join('').split(',').join('\n')}` : '';
             const recommendedFixedVersion = (0, exports.isUndefinedOrEmptyString)(finding.recommendedFixedVersion) ? 'No available fixed version' : finding.recommendedFixedVersion;
-            const linkToAffectedCode = finding.linkToAffectedCode ? { content: 'link', href: finding.linkToAffectedCode } : 'No location found';
-            return Object.assign(Object.assign({}, finding), { findingName: `${finding.findingName}${introducedThroughOutput}`, recommendedFixedVersion, linkToAffectedCode });
+            return Object.assign(Object.assign({}, finding), { findingName: `${finding.findingName}${introducedThroughOutput}`, recommendedFixedVersion });
     }
     return finding;
 };
@@ -329,7 +328,7 @@ const getColumns = (category, findings) => {
                 { name: 'findingName', title: 'Vulnerable package' },
                 { name: 'details', title: 'Vulnerabilities' },
                 { name: 'recommendedFixedVersion', title: 'Recomended fixed version' },
-                { name: 'linkToAffectedCode', title: 'Package location' }
+                { name: 'linkToAffectedCode', title: 'Package location', width: findings.reduce((prev, curr) => Math.max(curr.linkToAffectedCode.length, prev), 0) + 6 }
             ];
     }
     return [];
