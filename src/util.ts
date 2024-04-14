@@ -31,7 +31,8 @@ export const combineColumns = (finding: Finding) => {
         case PolicyCategory['VULNERABLE_OSS_PACKAGES']:
             const introducedThroughOutput = finding.introducedThrough ? `\n\nIntroduced through:\n${finding.introducedThrough.split('\n').slice(0, 3).join('').split(',').join('\n')}` : ''
             const recommendedFixedVersion = isUndefinedOrEmptyString(finding.recommendedFixedVersion) ? 'No available fixed version' : finding.recommendedFixedVersion
-            return {...finding, findingName: `${finding.findingName}${introducedThroughOutput}`, recommendedFixedVersion}
+            const linkToAffectedCode = finding.linkToAffectedCode ? (finding.linkToAffectedCode.split('blob').slice(1).join('')) : 'No link found'
+            return {...finding, findingName: `${finding.findingName}${introducedThroughOutput}`, recommendedFixedVersion, linkToAffectedCode}
     }
     return finding
 }
