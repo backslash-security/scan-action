@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { AfterScanResponse, FullOrDiff, ScanStatusRsponse, ScmConnectorProvider, StartScanResponse } from "./types";
+import { AfterScanResponse, ScanStatusRsponse, ScmConnectorProvider, StartScanResponse } from "./types";
 //@ts-ignore
 import * as tl from './node_modules/azure-pipelines-task-lib/task'
 
@@ -47,7 +47,7 @@ export const getScanStatus = async (scanId: string): Promise<ScanStatusRsponse |
     return response.data ?? undefined
 }
 
-export const getScanFinalResult = async (scanId: string, fullOrDiff: FullOrDiff): Promise<AfterScanResponse | undefined> => {
-    const response = await axiosWithAuth({url: `v2/query/CI?scanId=${scanId}&allIssues=${fullOrDiff === FullOrDiff['FULL']}`, method: 'get'})
+export const getScanFinalResult = async (scanId: string, isAll: boolean): Promise<AfterScanResponse | undefined> => {
+    const response = await axiosWithAuth({url: `v2/query/CI?scanId=${scanId}&allIssues=${isAll}`, method: 'get'})
     return response.data ?? undefined
 }

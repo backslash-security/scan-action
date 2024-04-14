@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getScanFinalResult = exports.getScanStatus = exports.startScan = exports.axiosWithAuth = exports.setAuthToken = void 0;
 const axios_1 = require("axios");
-const types_1 = require("./types");
 //@ts-ignore
 const tl = require("./node_modules/azure-pipelines-task-lib/task");
 const baseUrl = 'https://api.app.backslash.security/api';
@@ -58,9 +57,9 @@ const getScanStatus = (scanId) => __awaiter(void 0, void 0, void 0, function* ()
     return (_a = response.data) !== null && _a !== void 0 ? _a : undefined;
 });
 exports.getScanStatus = getScanStatus;
-const getScanFinalResult = (scanId, fullOrDiff) => __awaiter(void 0, void 0, void 0, function* () {
+const getScanFinalResult = (scanId, isAll) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
-    const response = yield (0, exports.axiosWithAuth)({ url: `v2/query/CI?scanId=${scanId}&allIssues=${fullOrDiff === types_1.FullOrDiff['FULL']}`, method: 'get' });
+    const response = yield (0, exports.axiosWithAuth)({ url: `v2/query/CI?scanId=${scanId}&allIssues=${isAll}`, method: 'get' });
     return (_b = response.data) !== null && _b !== void 0 ? _b : undefined;
 });
 exports.getScanFinalResult = getScanFinalResult;
