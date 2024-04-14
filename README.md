@@ -36,8 +36,7 @@ jobs:
           allFindings: true
 ```
 
-in order to update:
-
+in order to build run
+```
 npm run build
-git tag -a -m "{version message}" v{version}
-git push --follow-tags 
+```
