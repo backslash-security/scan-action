@@ -31076,23 +31076,31 @@ module.exports = parseParams
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
+"use strict";
+var exports = __webpack_exports__;
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __nccwpck_require__(5969);
 const github = __nccwpck_require__(2262);
-
 try {
-  // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello ${nameToGreet}!`);
-  const time = (new Date()).toTimeString();
-  core.setOutput("time", time);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
+    const nameToGreet = core.getInput('who-to-greet');
+    console.log(`Hello ${nameToGreet}!`);
+    // core.setOutput("time", time);
+    const sourceBranch = github.context.payload.pull_request.head.ref;
+    const targetBranch = github.context.payload.pull_request.base.ref;
+    const authToken = core.getInput('authToken');
+    const enforceBlock = core.getInput('enforceBlock') === 'true';
+    const isAll = core.getInput('allFindings') === 'true';
+    const payload = JSON.stringify(github.context.payload, undefined, 2);
+    console.log(`The event payload: ${payload}`);
+    console.log({ sourceBranch, targetBranch, authToken, enforceBlock, isAll });
 }
+catch (error) {
+    core.setFailed(error.message);
+}
+
 })();
 
 module.exports = __webpack_exports__;

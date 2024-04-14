@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "sourceMap": false,
+        "rootDir": "./src",
+        "outDir": "./dist/build",
+        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "target": "ES6"
+    },
+    "filesGlob": [
+        "./scripts/**/*.ts",
+        "!**/*.tests.ts"
+    ],
+    "include": ["./src"],
+    "exclude": []
+}

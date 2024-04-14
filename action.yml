@@ -1,14 +1,27 @@
 
 name: 'Hello World'
 description: 'Greet someone and record the time'
+  const authToken: string | undefined = core.getInput('authToken');
+  const enforceBlock: boolean = core.getInput('enforceBlock') === 'true';
+  const fullOrDiff = core.getInput('fullOrDiff') as FullOrDiff;
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  authToken:
+    description: 'Backslash autherization token'
     required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+    default: ''
+  enforceBlock:
+    description: 'Enforce pipeline blocking if scan fails?'
+    type: boolean
+    required: true
+    default: true
+  allFindings:
+    description: 'If set to true, the scan will return all findings, otherwise the scan will return only findings new to the pr'
+    required: true
+    type: boolean
+    default: false
+# outputs:
+  # time: # id of output
+    # description: 'The time we greeted you'
 runs:
   using: 'node20'
   main: 'dist/index.js'

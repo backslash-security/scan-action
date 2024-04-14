@@ -23,6 +23,6 @@ with:
 
 in order to update:
 
-ncc build index.js --license licenses.txt
+npm run build
 git tag -a -m "{version message}" v{version}
 git push --follow-tags 
