@@ -3,26 +3,40 @@ A github aciton for scanning your project with backslash
 
 ## Inputs
 
-### `who-to-greet`
+### `authToken`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Required** Your backslash api token.
 
-## Outputs
+### `enforceBlock`
 
-### `time`
+**Required** Enforce pipeline blocking if scan fails?
 
-The time we greeted you.
+### `allFindings`
+
+**Required** If set to true, the scan will return all findings, otherwise the scan will return only findings new to the pr.
 
 ## Example usage
 
 ```yaml
-uses: actions/hello-world-javascript-action@e76147da8e5c81eaf017dede5645551d4b94427b
-with:
-  who-to-greet: 'Mona the Octocat'
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  backslash_scan_job:
+    runs-on: self-hosted
+    name: Backslash scan
+    steps:
+      - name: Backslash scan step
+        id: bscan
+        uses: backslash-security/scan-action@main
+        with:
+          authToken: ${{ secrets.AUTH_TOKEN }}
+          enforceBlock: true
+          allFindings: true
 ```
 
-in order to update:
-
+in order to build run
+```
 npm run build
-git tag -a -m "{version message}" v{version}
-git push --follow-tags 
+```
