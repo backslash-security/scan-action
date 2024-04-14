@@ -98,7 +98,7 @@ export const getColumns = (category: PolicyCategory, findings: Finding[]): Colum
                 {name: 'details', title: 'Vulnerabilities'},
                 { name: 'recommendedFixedVersion', title: 'Recomended fixed version', width: 10},
                 {name: 'linkToAffectedCode', title: 'Package location', width: 
-                    findings.reduce((prev, curr) => Math.max(curr.linkToAffectedCode.length, prev), 0) + 6}
+                    findings.reduce((prev, curr) => Math.max(curr.linkToAffectedCode.split('blob').slice(1).join('').length, prev), 0) + 6}
             ]
     }
     return []

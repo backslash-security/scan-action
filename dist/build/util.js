@@ -86,7 +86,7 @@ const getColumns = (category, findings) => {
                 { name: 'findingName', title: 'Vulnerable package' },
                 { name: 'details', title: 'Vulnerabilities' },
                 { name: 'recommendedFixedVersion', title: 'Recomended fixed version', width: 10 },
-                { name: 'linkToAffectedCode', title: 'Package location', width: findings.reduce((prev, curr) => Math.max(curr.linkToAffectedCode.length, prev), 0) + 6 }
+                { name: 'linkToAffectedCode', title: 'Package location', width: findings.reduce((prev, curr) => Math.max(curr.linkToAffectedCode.split('blob').slice(1).join('').length, prev), 0) + 6 }
             ];
     }
     return [];
