@@ -8,7 +8,7 @@ export type ColumnConfig = {
     width?: number
 }
 
-const defaultColumnWidth = 45
+const defaultColumnWidth = 30
 
 export const sleep = (ms: number) => new Promise (res => setTimeout(() => res(''), ms))
 
@@ -31,7 +31,8 @@ export const combineColumns = (finding: Finding) => {
         case PolicyCategory['VULNERABLE_OSS_PACKAGES']:
             const introducedThroughOutput = finding.introducedThrough ? `\n\nIntroduced through:\n${finding.introducedThrough.split('\n').slice(0, 3).join('').split(',').join('\n')}` : ''
             const recommendedFixedVersion = isUndefinedOrEmptyString(finding.recommendedFixedVersion) ? 'No available fixed version' : finding.recommendedFixedVersion
-            return {...finding, findingName: `${finding.findingName}${introducedThroughOutput}`, recommendedFixedVersion}
+            const linkToAffectedCode = finding.linkToAffectedCode ? {content: 'link', href: finding.linkToAffectedCode} : 'No location found'
+            return {...finding, findingName: `${finding.findingName}${introducedThroughOutput}`, recommendedFixedVersion, linkToAffectedCode}
     }
     return finding
 }
@@ -96,8 +97,7 @@ export const getColumns = (category: PolicyCategory, findings: Finding[]): Colum
                 {name: 'findingName', title: 'Vulnerable package'},
                 {name: 'details', title: 'Vulnerabilities'},
                 { name: 'recommendedFixedVersion', title: 'Recomended fixed version'},
-                {name: 'linkToAffectedCode', title: 'Package location', width: 
-                    findings.reduce((prev, curr) => Math.max(curr.linkToAffectedCode.length, prev), 0) + 6}
+                {name: 'linkToAffectedCode', title: 'Package location'}
             ]
     }
     return []
