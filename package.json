@@ -15,6 +15,7 @@
     "@actions/github": "^6.0.0",
     "axios": "^1.6.8",
     "cli-table3": "^0.6.4",
+    "terminal-link": "^3.0.0",
     "typescript": "^5.4.5"
   },
   "devDependencies": {

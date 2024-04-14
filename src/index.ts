@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import terminalLink from 'terminal-link';
 
 import { AfterScanResponse, Finding, FullOrDiff, PolicyCI, PolicyCategory, StartScanResponse } from './types'
 import { getScanFinalResult, getScanStatus, setAuthToken, startScan } from './http'
@@ -8,6 +9,13 @@ import { extractConnectorProviderFromUri, extractOrganizationFromUri, printSorte
 
 async function run() {
     try {
+
+
+      const link = terminalLink('My Website', 'https://sindresorhus.com');
+      console.log(link);
+      core.info(link)
+
+
         const sourceBranch: string = github.context.payload.pull_request.head.ref
         const targetBranch: string = github.context.payload.pull_request.base.ref
       
