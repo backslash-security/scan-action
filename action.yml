@@ -1,9 +1,7 @@
 
 name: 'Hello World'
 description: 'Greet someone and record the time'
-  const authToken: string | undefined = core.getInput('authToken');
-  const enforceBlock: boolean = core.getInput('enforceBlock') === 'true';
-  const fullOrDiff = core.getInput('fullOrDiff') as FullOrDiff;
+
 inputs:
   authToken:
     description: 'Backslash autherization token'
