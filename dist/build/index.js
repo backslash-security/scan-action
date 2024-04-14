@@ -11,12 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = require("@actions/core");
 const github = require("@actions/github");
+const terminal_link_1 = require("terminal-link");
 const types_1 = require("./types");
 const http_1 = require("./http");
 const util_1 = require("./util");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const link = (0, terminal_link_1.default)('My Website', 'https://sindresorhus.com');
+            console.log(link);
+            core.info(link);
             const sourceBranch = github.context.payload.pull_request.head.ref;
             const targetBranch = github.context.payload.pull_request.base.ref;
             const authToken = core.getInput('authToken');
