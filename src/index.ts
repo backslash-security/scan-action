@@ -53,7 +53,7 @@ async function run() {
             }
             if(scanStatus.status === 'IN_PROGRESS'){ 
                 const secondsOngoing = ((new Date()).getTime() - startScanDate.getTime()) / 1000
-                console.log(`Scan ${startScanResponse.scanId} is still ongoing, and has been ongoing for ${secondsOngoing} seconds`)
+                core.info(`Scan ${startScanResponse.scanId} is still ongoing, and has been ongoing for ${secondsOngoing} seconds`)
             }
             else{
                 scanCompleted = true
@@ -62,7 +62,7 @@ async function run() {
             await sleep(1000 * 10)
         }
 
-        console.log(`Your scan has completed`)
+        core.info(`Your scan has completed`)
 
         const finalResult = await getScanFinalResult(scanId, isAll)
 
@@ -76,16 +76,16 @@ async function run() {
         const scanWarnMessage = `Your backslash security task failed some backslash security policies however they were not critical enough to block the pipeline`
         
         if(finalResult.results.length > 0){
-            console.log(`Backslash scanned ${repositoryName}:${sourceBranch} and found issues that violate the defined issue-policies.`)
-            console.log()
+            core.info(`Backslash scanned ${repositoryName}:${sourceBranch} and found issues that violate the defined issue-policies.`)
+            core.info('')
             const blockingResults = finalResult.results.filter(result => result.status === PolicyCI['BLOCK'])
             const alertingResults = finalResult.results.filter(result => result.status === PolicyCI['ALERT'])
 
             const sortedBlockingResults = sortFindingsByType(blockingResults)
             const sortedAlertingResults = sortFindingsByType(alertingResults)
 
-            console.log(`Total unique issues: ${finalResult.results.length}. Vulnerable Packages: ${sortedAlertingResults.VULNERABLE_OSS_PACKAGES.length + sortedBlockingResults.VULNERABLE_OSS_PACKAGES.length}, Vulnerable code: ${sortedAlertingResults.VULNERABLE_CODE.length + sortedBlockingResults.VULNERABLE_CODE.length}, Insecure secrets: ${sortedAlertingResults.INSECURE_SECRETS.length + sortedBlockingResults.INSECURE_SECRETS.length}, License issues: ${sortedAlertingResults.LICENSE_ISSUES.length + sortedBlockingResults.LICENSE_ISSUES.length}, Malicious packages: ${sortedAlertingResults.MALICIOUS_OSS_PACAKGES.length + sortedBlockingResults.MALICIOUS_OSS_PACAKGES.length}`)
-            console.log()
+            core.info(`Total unique issues: ${finalResult.results.length}. Vulnerable Packages: ${sortedAlertingResults.VULNERABLE_OSS_PACKAGES.length + sortedBlockingResults.VULNERABLE_OSS_PACKAGES.length}, Vulnerable code: ${sortedAlertingResults.VULNERABLE_CODE.length + sortedBlockingResults.VULNERABLE_CODE.length}, Insecure secrets: ${sortedAlertingResults.INSECURE_SECRETS.length + sortedBlockingResults.INSECURE_SECRETS.length}, License issues: ${sortedAlertingResults.LICENSE_ISSUES.length + sortedBlockingResults.LICENSE_ISSUES.length}, Malicious packages: ${sortedAlertingResults.MALICIOUS_OSS_PACAKGES.length + sortedBlockingResults.MALICIOUS_OSS_PACAKGES.length}`)
+            core.info('')
 
             const unsupportedCategories = [PolicyCategory['LICENSE_ISSUES'], PolicyCategory['MALICIOUS_OSS_PACAKGES']]
             const filteredBlockingResults = blockingResults.filter(result => (unsupportedCategories.every(category => category !== result.policyCategory)))
@@ -93,13 +93,13 @@ async function run() {
 
             if(filteredBlockingResults.length > 0){
                 specialLog(`Blocking issues - the following ${filteredBlockingResults.length} issues block the scan:`, 'error');
-                console.log()
+                core.info('')
                 printSortedFindings(sortedBlockingResults, 'Blocking')
             }
 
             if(filteredAlertingResults.length > 0){
                 specialLog(`Report-only issues - the following ${filteredAlertingResults.length} issues don’t block the scan:`, 'warning');
-                console.log()
+                core.info('')
                 printSortedFindings(sortedAlertingResults, 'Alerting')
             }
         }

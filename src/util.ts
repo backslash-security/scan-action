@@ -1,5 +1,6 @@
 import { Finding, PolicyCategory, ScmConnectorProvider } from "./types"
 import * as Table from 'cli-table3'
+import * as core from '@actions/core';
 
 export type ColumnConfig = {
     name: string,
@@ -14,13 +15,13 @@ export const sleep = (ms: number) => new Promise (res => setTimeout(() => res(''
 export type LogType = 'error' | 'green' | 'warning'
 
 export const logTypes: Record<LogType, string> = {
-    error: "##[error]",
-    green: "##[section]",
-    warning: "##[warning]"
+    error: "\x1b[31m",
+    green: "\x1b[32m",
+    warning: "\x1b[33m"
 }
 
 export const specialLog = (toPrint: string, messageType: LogType) => {
-    console.log(logTypes[messageType] + toPrint);
+    core.info(logTypes[messageType] + toPrint);
 }
 
 export const isUndefinedOrEmptyString = (str: string | undefined) => str === '' || !str
@@ -45,23 +46,23 @@ export const displayFindings = (findings: Finding[], columns: ColumnConfig[] ) =
     
 
     findings.map(combineColumns).forEach(result => table.push(columns.map(column => result[column.name] ?? '')))
-    console.log(table.toString());
+    core.info(table.toString());
 }
 
 export const printSortedFindings = (sortedFindings: Record<PolicyCategory, Finding[]>, preTableString: string) => {
     if(sortedFindings.VULNERABLE_OSS_PACKAGES.length > 0){
-        console.log(`${preTableString} Vulnerable packages:`)
-        console.log()
+        core.info(`${preTableString} Vulnerable packages:`)
+        core.info('')
         displayFindings(sortedFindings.VULNERABLE_OSS_PACKAGES, getColumns(PolicyCategory['VULNERABLE_OSS_PACKAGES'], sortedFindings.VULNERABLE_OSS_PACKAGES))
     }
     if(sortedFindings.VULNERABLE_CODE.length > 0){
-        console.log(`${preTableString} Vulnerable code:`)
-        console.log()
+        core.info(`${preTableString} Vulnerable code:`)
+        core.info('')
         displayFindings(sortedFindings.VULNERABLE_CODE, getColumns(PolicyCategory['VULNERABLE_CODE'], sortedFindings.VULNERABLE_CODE))
     }
     if(sortedFindings.INSECURE_SECRETS.length > 0){
-        console.log(`${preTableString} Insecure Secrets:`)
-        console.log()
+        core.info(`${preTableString} Insecure Secrets:`)
+        core.info('')
         displayFindings(sortedFindings.INSECURE_SECRETS, getColumns(PolicyCategory['INSECURE_SECRETS'], sortedFindings.INSECURE_SECRETS))
     }
 

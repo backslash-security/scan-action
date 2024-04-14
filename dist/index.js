@@ -18,8 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getScanFinalResult = exports.getScanStatus = exports.startScan = exports.axiosWithAuth = exports.setAuthToken = void 0;
 const axios_1 = __nccwpck_require__(517);
-//@ts-ignore
-const tl = __nccwpck_require__(1985);
+const core = __nccwpck_require__(5969);
 const baseUrl = 'https://api.app.backslash.security/api';
 var authToken = '';
 const setAuthToken = (token) => authToken = token !== null && token !== void 0 ? token : '';
@@ -28,16 +27,16 @@ const axiosWithAuth = (config) => __awaiter(void 0, void 0, void 0, function* ()
     let retries = 0;
     while (retries <= 3) {
         try {
-            // console.log(config)
-            tl.debug('running request with config:');
-            tl.debug(JSON.stringify(config));
+            // core.info(config)
+            core.debug('running request with config:');
+            core.debug(JSON.stringify(config));
             const response = yield (0, axios_1.default)(Object.assign(Object.assign({}, config), { baseURL: baseUrl, headers: { Authorization: `Bearer ${authToken}` } }));
-            tl.debug('response:');
-            tl.debug(JSON.stringify(response.data));
+            core.debug('response:');
+            core.debug(JSON.stringify(response.data));
             return response;
         }
         catch (error) {
-            tl.debug(error);
+            core.debug(error);
             retries += 1;
             if (retries === 3 || config.method.toLowerCase() === 'post')
                 return error;
@@ -127,7 +126,7 @@ function run() {
                 }
                 if (scanStatus.status === 'IN_PROGRESS') {
                     const secondsOngoing = ((new Date()).getTime() - startScanDate.getTime()) / 1000;
-                    console.log(`Scan ${startScanResponse.scanId} is still ongoing, and has been ongoing for ${secondsOngoing} seconds`);
+                    core.info(`Scan ${startScanResponse.scanId} is still ongoing, and has been ongoing for ${secondsOngoing} seconds`);
                 }
                 else {
                     scanCompleted = true;
@@ -135,7 +134,7 @@ function run() {
                 }
                 yield (0, util_1.sleep)(1000 * 10);
             }
-            console.log(`Your scan has completed`);
+            core.info(`Your scan has completed`);
             const finalResult = yield (0, http_1.getScanFinalResult)(scanId, isAll);
             if (finalResult === undefined) {
                 return core.setFailed('Scan failed, we encountered an internal error');
@@ -144,25 +143,25 @@ function run() {
             const scanFailMessage = 'Your backslash security task is blocked beacuse it fails critical security policies in the backslash platform';
             const scanWarnMessage = `Your backslash security task failed some backslash security policies however they were not critical enough to block the pipeline`;
             if (finalResult.results.length > 0) {
-                console.log(`Backslash scanned ${repositoryName}:${sourceBranch} and found issues that violate the defined issue-policies.`);
-                console.log();
+                core.info(`Backslash scanned ${repositoryName}:${sourceBranch} and found issues that violate the defined issue-policies.`);
+                core.info('');
                 const blockingResults = finalResult.results.filter(result => result.status === types_1.PolicyCI['BLOCK']);
                 const alertingResults = finalResult.results.filter(result => result.status === types_1.PolicyCI['ALERT']);
                 const sortedBlockingResults = (0, util_1.sortFindingsByType)(blockingResults);
                 const sortedAlertingResults = (0, util_1.sortFindingsByType)(alertingResults);
-                console.log(`Total unique issues: ${finalResult.results.length}. Vulnerable Packages: ${sortedAlertingResults.VULNERABLE_OSS_PACKAGES.length + sortedBlockingResults.VULNERABLE_OSS_PACKAGES.length}, Vulnerable code: ${sortedAlertingResults.VULNERABLE_CODE.length + sortedBlockingResults.VULNERABLE_CODE.length}, Insecure secrets: ${sortedAlertingResults.INSECURE_SECRETS.length + sortedBlockingResults.INSECURE_SECRETS.length}, License issues: ${sortedAlertingResults.LICENSE_ISSUES.length + sortedBlockingResults.LICENSE_ISSUES.length}, Malicious packages: ${sortedAlertingResults.MALICIOUS_OSS_PACAKGES.length + sortedBlockingResults.MALICIOUS_OSS_PACAKGES.length}`);
-                console.log();
+                core.info(`Total unique issues: ${finalResult.results.length}. Vulnerable Packages: ${sortedAlertingResults.VULNERABLE_OSS_PACKAGES.length + sortedBlockingResults.VULNERABLE_OSS_PACKAGES.length}, Vulnerable code: ${sortedAlertingResults.VULNERABLE_CODE.length + sortedBlockingResults.VULNERABLE_CODE.length}, Insecure secrets: ${sortedAlertingResults.INSECURE_SECRETS.length + sortedBlockingResults.INSECURE_SECRETS.length}, License issues: ${sortedAlertingResults.LICENSE_ISSUES.length + sortedBlockingResults.LICENSE_ISSUES.length}, Malicious packages: ${sortedAlertingResults.MALICIOUS_OSS_PACAKGES.length + sortedBlockingResults.MALICIOUS_OSS_PACAKGES.length}`);
+                core.info('');
                 const unsupportedCategories = [types_1.PolicyCategory['LICENSE_ISSUES'], types_1.PolicyCategory['MALICIOUS_OSS_PACAKGES']];
                 const filteredBlockingResults = blockingResults.filter(result => (unsupportedCategories.every(category => category !== result.policyCategory)));
                 const filteredAlertingResults = alertingResults.filter(result => (unsupportedCategories.every(category => category !== result.policyCategory)));
                 if (filteredBlockingResults.length > 0) {
                     (0, util_1.specialLog)(`Blocking issues - the following ${filteredBlockingResults.length} issues block the scan:`, 'error');
-                    console.log();
+                    core.info('');
                     (0, util_1.printSortedFindings)(sortedBlockingResults, 'Blocking');
                 }
                 if (filteredAlertingResults.length > 0) {
                     (0, util_1.specialLog)(`Report-only issues - the following ${filteredAlertingResults.length} issues don’t block the scan:`, 'warning');
-                    console.log();
+                    core.info('');
                     (0, util_1.printSortedFindings)(sortedAlertingResults, 'Alerting');
                 }
             }
@@ -247,16 +246,17 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.extractOrganizationFromUri = exports.extractConnectorProviderFromUri = exports.getColumns = exports.sortFindingsByType = exports.printSortedFindings = exports.displayFindings = exports.combineColumns = exports.isUndefinedOrEmptyString = exports.specialLog = exports.logTypes = exports.sleep = void 0;
 const types_1 = __nccwpck_require__(5934);
 const Table = __nccwpck_require__(7098);
+const core = __nccwpck_require__(5969);
 const defaultColumnWidth = 45;
 const sleep = (ms) => new Promise(res => setTimeout(() => res(''), ms));
 exports.sleep = sleep;
 exports.logTypes = {
-    error: "##[error]",
-    green: "##[section]",
-    warning: "##[warning]"
+    error: "\x1b[31m",
+    green: "\x1b[32m",
+    warning: "\x1b[33m"
 };
 const specialLog = (toPrint, messageType) => {
-    console.log(exports.logTypes[messageType] + toPrint);
+    core.info(exports.logTypes[messageType] + toPrint);
 };
 exports.specialLog = specialLog;
 const isUndefinedOrEmptyString = (str) => str === '' || !str;
@@ -279,23 +279,23 @@ const displayFindings = (findings, columns) => {
         wrapOnWordBoundary: false
     });
     findings.map(exports.combineColumns).forEach(result => table.push(columns.map(column => { var _a; return (_a = result[column.name]) !== null && _a !== void 0 ? _a : ''; })));
-    console.log(table.toString());
+    core.info(table.toString());
 };
 exports.displayFindings = displayFindings;
 const printSortedFindings = (sortedFindings, preTableString) => {
     if (sortedFindings.VULNERABLE_OSS_PACKAGES.length > 0) {
-        console.log(`${preTableString} Vulnerable packages:`);
-        console.log();
+        core.info(`${preTableString} Vulnerable packages:`);
+        core.info('');
         (0, exports.displayFindings)(sortedFindings.VULNERABLE_OSS_PACKAGES, (0, exports.getColumns)(types_1.PolicyCategory['VULNERABLE_OSS_PACKAGES'], sortedFindings.VULNERABLE_OSS_PACKAGES));
     }
     if (sortedFindings.VULNERABLE_CODE.length > 0) {
-        console.log(`${preTableString} Vulnerable code:`);
-        console.log();
+        core.info(`${preTableString} Vulnerable code:`);
+        core.info('');
         (0, exports.displayFindings)(sortedFindings.VULNERABLE_CODE, (0, exports.getColumns)(types_1.PolicyCategory['VULNERABLE_CODE'], sortedFindings.VULNERABLE_CODE));
     }
     if (sortedFindings.INSECURE_SECRETS.length > 0) {
-        console.log(`${preTableString} Insecure Secrets:`);
-        console.log();
+        core.info(`${preTableString} Insecure Secrets:`);
+        core.info('');
         (0, exports.displayFindings)(sortedFindings.INSECURE_SECRETS, (0, exports.getColumns)(types_1.PolicyCategory['INSECURE_SECRETS'], sortedFindings.INSECURE_SECRETS));
     }
     // NEED TO ADD SUPPORT FOR LISENCE AND MALICIOUS!!! TODO!!!
@@ -33972,14 +33972,6 @@ function wrappy (fn, cb) {
     return ret
   }
 }
-
-
-/***/ }),
-
-/***/ 1985:
-/***/ ((module) => {
-
-module.exports = eval("require")("./node_modules/azure-pipelines-task-lib/task");
 
 
 /***/ }),

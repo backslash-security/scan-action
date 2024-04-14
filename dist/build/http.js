@@ -11,8 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getScanFinalResult = exports.getScanStatus = exports.startScan = exports.axiosWithAuth = exports.setAuthToken = void 0;
 const axios_1 = require("axios");
-//@ts-ignore
-const tl = require("./node_modules/azure-pipelines-task-lib/task");
+const core = require("@actions/core");
 const baseUrl = 'https://api.app.backslash.security/api';
 var authToken = '';
 const setAuthToken = (token) => authToken = token !== null && token !== void 0 ? token : '';
@@ -21,16 +20,16 @@ const axiosWithAuth = (config) => __awaiter(void 0, void 0, void 0, function* ()
     let retries = 0;
     while (retries <= 3) {
         try {
-            // console.log(config)
-            tl.debug('running request with config:');
-            tl.debug(JSON.stringify(config));
+            // core.info(config)
+            core.debug('running request with config:');
+            core.debug(JSON.stringify(config));
             const response = yield (0, axios_1.default)(Object.assign(Object.assign({}, config), { baseURL: baseUrl, headers: { Authorization: `Bearer ${authToken}` } }));
-            tl.debug('response:');
-            tl.debug(JSON.stringify(response.data));
+            core.debug('response:');
+            core.debug(JSON.stringify(response.data));
             return response;
         }
         catch (error) {
-            tl.debug(error);
+            core.debug(error);
             retries += 1;
             if (retries === 3 || config.method.toLowerCase() === 'post')
                 return error;

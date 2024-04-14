@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { AfterScanResponse, ScanStatusRsponse, ScmConnectorProvider, StartScanResponse } from "./types";
-//@ts-ignore
-import * as tl from './node_modules/azure-pipelines-task-lib/task'
+import * as core from '@actions/core';
 
 const baseUrl = 'https://api.app.backslash.security/api'
 
@@ -14,16 +13,16 @@ export const axiosWithAuth = async (config: AxiosRequestConfig) => {
 
     while(retries <= 3){
         try{
-            // console.log(config)
-            tl.debug('running request with config:')
-            tl.debug(JSON.stringify(config))
+            // core.info(config)
+            core.debug('running request with config:')
+            core.debug(JSON.stringify(config))
             const response = await axios({...config, baseURL: baseUrl, headers: {Authorization: `Bearer ${authToken}`}})
-            tl.debug('response:')
-            tl.debug(JSON.stringify(response.data))
+            core.debug('response:')
+            core.debug(JSON.stringify(response.data))
             return response
         }
         catch(error){
-            tl.debug(error)
+            core.debug(error)
             retries += 1
             if(retries === 3 || config.method.toLowerCase() === 'post') return error
         }

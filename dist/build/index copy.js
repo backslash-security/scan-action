@@ -20,8 +20,8 @@ function run() {
             const authToken = tl.getInput('authToken', true);
             const enforceBlock = tl.getInput('enforceBlock', true) === 'true';
             const fullOrDiff = tl.getInput('fullOrDiff', true);
-            tl.debug(`enforceBlock: ${enforceBlock}`);
-            tl.debug(`fullDiff: ${fullOrDiff}`);
+            core.debug(`enforceBlock: ${enforceBlock}`);
+            core.debug(`fullDiff: ${fullOrDiff}`);
             (0, http_1.setAuthToken)(authToken);
             const targetBranch = tl.getVariable('System.PullRequest.targetBranchName');
             const repoUri = tl.getVariable('build.repository.uri');
@@ -50,7 +50,7 @@ function run() {
                 }
                 if (scanStatus.status === 'IN_PROGRESS') {
                     const secondsOngoing = ((new Date()).getTime() - startScanDate.getTime()) / 1000;
-                    console.log(`Scan ${startScanResponse.scanId} is still ongoing, and has been ongoing for ${secondsOngoing} seconds`);
+                    core.info(`Scan ${startScanResponse.scanId} is still ongoing, and has been ongoing for ${secondsOngoing} seconds`);
                 }
                 else {
                     scanCompleted = true;
@@ -58,7 +58,7 @@ function run() {
                 }
                 yield (0, util_1.sleep)(1000 * 10);
             }
-            console.log(`Your scan has completed`);
+            core.info(`Your scan has completed`);
             const finalResult = yield (0, http_1.getScanFinalResult)(scanId, fullOrDiff);
             if (finalResult === undefined) {
                 return tl.setResult(tl.TaskResult.Failed, 'Scan failed, we encountered an internal error');
@@ -67,25 +67,25 @@ function run() {
             const scanFailMessage = 'Your backslash security task is blocked beacuse it fails critical security policies in the backslash platform';
             const scanWarnMessage = `Your backslash security task failed some backslash security policies however they were not critical enough to block the pipeline`;
             if (finalResult.results.length > 0) {
-                console.log(`Backslash scanned ${repositoryName}:${sourceBranch} and found issues that violate the defined issue-policies.`);
-                console.log();
+                core.info(`Backslash scanned ${repositoryName}:${sourceBranch} and found issues that violate the defined issue-policies.`);
+                core.info();
                 const blockingResults = finalResult.results.filter(result => result.status === types_1.PolicyCI['BLOCK']);
                 const alertingResults = finalResult.results.filter(result => result.status === types_1.PolicyCI['ALERT']);
                 const sortedBlockingResults = (0, util_1.sortFindingsByType)(blockingResults);
                 const sortedAlertingResults = (0, util_1.sortFindingsByType)(alertingResults);
-                console.log(`Total unique issues: ${finalResult.results.length}. Vulnerable Packages: ${sortedAlertingResults.VULNERABLE_OSS_PACKAGES.length + sortedBlockingResults.VULNERABLE_OSS_PACKAGES.length}, Vulnerable code: ${sortedAlertingResults.VULNERABLE_CODE.length + sortedBlockingResults.VULNERABLE_CODE.length}, Insecure secrets: ${sortedAlertingResults.INSECURE_SECRETS.length + sortedBlockingResults.INSECURE_SECRETS.length}, License issues: ${sortedAlertingResults.LICENSE_ISSUES.length + sortedBlockingResults.LICENSE_ISSUES.length}, Malicious packages: ${sortedAlertingResults.MALICIOUS_OSS_PACAKGES.length + sortedBlockingResults.MALICIOUS_OSS_PACAKGES.length}`);
-                console.log();
+                core.info(`Total unique issues: ${finalResult.results.length}. Vulnerable Packages: ${sortedAlertingResults.VULNERABLE_OSS_PACKAGES.length + sortedBlockingResults.VULNERABLE_OSS_PACKAGES.length}, Vulnerable code: ${sortedAlertingResults.VULNERABLE_CODE.length + sortedBlockingResults.VULNERABLE_CODE.length}, Insecure secrets: ${sortedAlertingResults.INSECURE_SECRETS.length + sortedBlockingResults.INSECURE_SECRETS.length}, License issues: ${sortedAlertingResults.LICENSE_ISSUES.length + sortedBlockingResults.LICENSE_ISSUES.length}, Malicious packages: ${sortedAlertingResults.MALICIOUS_OSS_PACAKGES.length + sortedBlockingResults.MALICIOUS_OSS_PACAKGES.length}`);
+                core.info();
                 const unsupportedCategories = [types_1.PolicyCategory['LICENSE_ISSUES'], types_1.PolicyCategory['MALICIOUS_OSS_PACAKGES']];
                 const filteredBlockingResults = blockingResults.filter(result => (unsupportedCategories.every(category => category !== result.policyCategory)));
                 const filteredAlertingResults = alertingResults.filter(result => (unsupportedCategories.every(category => category !== result.policyCategory)));
                 if (filteredBlockingResults.length > 0) {
                     (0, util_1.specialLog)(`Blocking issues - the following ${filteredBlockingResults.length} issues block the scan:`, 'error');
-                    console.log();
+                    core.info();
                     (0, util_1.printSortedFindings)(sortedBlockingResults, 'Blocking');
                 }
                 if (filteredAlertingResults.length > 0) {
                     (0, util_1.specialLog)(`Report-only issues - the following ${filteredAlertingResults.length} issues don’t block the scan:`, 'warning');
-                    console.log();
+                    core.info();
                     (0, util_1.printSortedFindings)(sortedAlertingResults, 'Alerting');
                 }
             }
