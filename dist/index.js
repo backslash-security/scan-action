@@ -247,7 +247,7 @@ exports.extractOrganizationFromUri = exports.extractConnectorProviderFromUri = e
 const types_1 = __nccwpck_require__(5934);
 const Table = __nccwpck_require__(7098);
 const core = __nccwpck_require__(5969);
-const defaultColumnWidth = 45;
+const defaultColumnWidth = 30;
 const sleep = (ms) => new Promise(res => setTimeout(() => res(''), ms));
 exports.sleep = sleep;
 exports.logTypes = {
@@ -266,7 +266,8 @@ const combineColumns = (finding) => {
         case types_1.PolicyCategory['VULNERABLE_OSS_PACKAGES']:
             const introducedThroughOutput = finding.introducedThrough ? `\n\nIntroduced through:\n${finding.introducedThrough.split('\n').slice(0, 3).join('').split(',').join('\n')}` : '';
             const recommendedFixedVersion = (0, exports.isUndefinedOrEmptyString)(finding.recommendedFixedVersion) ? 'No available fixed version' : finding.recommendedFixedVersion;
-            return Object.assign(Object.assign({}, finding), { findingName: `${finding.findingName}${introducedThroughOutput}`, recommendedFixedVersion });
+            const linkToAffectedCode = finding.linkToAffectedCode ? { content: 'link', href: finding.linkToAffectedCode } : 'No location found';
+            return Object.assign(Object.assign({}, finding), { findingName: `${finding.findingName}${introducedThroughOutput}`, recommendedFixedVersion, linkToAffectedCode });
     }
     return finding;
 };
@@ -328,7 +329,7 @@ const getColumns = (category, findings) => {
                 { name: 'findingName', title: 'Vulnerable package' },
                 { name: 'details', title: 'Vulnerabilities' },
                 { name: 'recommendedFixedVersion', title: 'Recomended fixed version' },
-                { name: 'linkToAffectedCode', title: 'Package location', width: findings.reduce((prev, curr) => Math.max(curr.linkToAffectedCode.length, prev), 0) + 6 }
+                { name: 'linkToAffectedCode', title: 'Package location' }
             ];
     }
     return [];
