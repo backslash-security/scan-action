@@ -96,6 +96,8 @@ const util_1 = __nccwpck_require__(3126);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+          console.log(github.context.payload);
+
             const sourceBranch = github.context.payload.pull_request.head.ref;
             const targetBranch = github.context.payload.pull_request.base.ref;
             const authToken = core.getInput('authToken');
@@ -106,7 +108,6 @@ function run() {
             const provider = (0, util_1.extractConnectorProviderFromUri)(repoUri);
             const organization = github.context.payload.organization.login;
             const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
-            console.log(github.context.payload);
             core.debug(JSON.stringify({ sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider }));
             (0, http_1.setAuthToken)(authToken);
             if (repositoryName === undefined || sourceBranch === undefined) {
