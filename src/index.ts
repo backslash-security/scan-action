@@ -10,9 +10,19 @@ async function run() {
     try {
 
 
-        const sourceBranch: string = github.context.payload.pull_request.head.ref
-        const targetBranch: string = github.context.payload.pull_request.base.ref
-      
+        const pr = github.context.payload.pull_request
+
+        let sourceBranch: string
+        let targetBranch: string | undefined = undefined
+
+        if(pr){
+          sourceBranch = pr.head.ref
+          targetBranch = pr.base.ref   
+        }
+        else{
+          sourceBranch = github.context.payload.ref.split('/').pop()
+        }
+
         const authToken: string | undefined = core.getInput('authToken');
       
 
@@ -26,7 +36,6 @@ async function run() {
         const organization: string = github.context.payload.organization.login
         const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
       
-        console.log(github.context.payload)
         core.debug(JSON.stringify({sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider}));
         
         setAuthToken(authToken)

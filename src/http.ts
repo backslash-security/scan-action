@@ -29,7 +29,7 @@ export const axiosWithAuth = async (config: AxiosRequestConfig) => {
     }
 }
 
-export const startScan = async (repository: string, branch: string, provider: ScmConnectorProvider, organization, targetBranch: string): Promise<StartScanResponse | undefined> => {
+export const startScan = async (repository: string, branch: string, provider: ScmConnectorProvider, organization, targetBranch: string | undefined): Promise<StartScanResponse | undefined> => {
     const response = (await axiosWithAuth({url: `v2/scan`, method: 'post', data: {
         repository,
         branch,

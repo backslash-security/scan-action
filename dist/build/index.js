@@ -17,8 +17,16 @@ const util_1 = require("./util");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const sourceBranch = github.context.payload.pull_request.head.ref;
-            const targetBranch = github.context.payload.pull_request.base.ref;
+            const pr = github.context.payload.pull_request;
+            let sourceBranch;
+            let targetBranch = undefined;
+            if (pr) {
+                sourceBranch = pr.head.ref;
+                targetBranch = pr.base.ref;
+            }
+            else {
+                sourceBranch = github.context.payload.ref.split('/').pop();
+            }
             const authToken = core.getInput('authToken');
             const enforceBlock = core.getBooleanInput('enforceBlock');
             const isAll = core.getBooleanInput('allFindings');
@@ -27,7 +35,6 @@ function run() {
             const provider = (0, util_1.extractConnectorProviderFromUri)(repoUri);
             const organization = github.context.payload.organization.login;
             const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
-            console.log(github.context.payload);
             core.debug(JSON.stringify({ sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider }));
             (0, http_1.setAuthToken)(authToken);
             if (repositoryName === undefined || sourceBranch === undefined) {
