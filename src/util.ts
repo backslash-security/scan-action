@@ -105,8 +105,6 @@ export const getColumns = (category: PolicyCategory, findings: Finding[]): Colum
 }
 
 export const extractConnectorProviderFromUri = (uri: string): ScmConnectorProvider => {
-    // https://yali0998@dev.azure.com/yali0998/test-project/_git/test-project
-    // https://github.com/backslash-security-tests/yali-test
     const host = uri.split('https://')[1].split('/')[0]
     if(host === 'github.com') return ScmConnectorProvider['Github']
     else return ScmConnectorProvider['AzureRepos']
@@ -114,8 +112,6 @@ export const extractConnectorProviderFromUri = (uri: string): ScmConnectorProvid
 
 
 export const extractOrganizationFromUri = (uri: string): string => {
-    // https://yali0998@dev.azure.com/yali0998/test-project/_git/test-project
-    // https://github.com/backslash-security-tests/yali-test
     const organization = uri.split('https://')[1].split('/')[1]
     return organization
 }
