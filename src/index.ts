@@ -15,6 +15,7 @@ async function run() {
       
         const authToken: string | undefined = core.getInput('authToken');
       
+
         const enforceBlock: boolean = core.getBooleanInput('enforceBlock');
         const isAll: boolean = core.getBooleanInput('allFindings');
         
@@ -24,7 +25,8 @@ async function run() {
 
         const organization: string = github.context.payload.organization.login
         const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
-        
+      
+        console.log(github.context.payload)
         core.debug(JSON.stringify({sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider}));
         
         setAuthToken(authToken)

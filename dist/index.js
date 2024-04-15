@@ -106,6 +106,7 @@ function run() {
             const provider = (0, util_1.extractConnectorProviderFromUri)(repoUri);
             const organization = github.context.payload.organization.login;
             const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
+            console.log(github.context.payload);
             core.debug(JSON.stringify({ sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider }));
             (0, http_1.setAuthToken)(authToken);
             if (repositoryName === undefined || sourceBranch === undefined) {
@@ -336,8 +337,6 @@ const getColumns = (category, findings) => {
 };
 exports.getColumns = getColumns;
 const extractConnectorProviderFromUri = (uri) => {
-    // https://yali0998@dev.azure.com/yali0998/test-project/_git/test-project
-    // https://github.com/backslash-security-tests/yali-test
     const host = uri.split('https://')[1].split('/')[0];
     if (host === 'github.com')
         return types_1.ScmConnectorProvider['Github'];
@@ -346,8 +345,6 @@ const extractConnectorProviderFromUri = (uri) => {
 };
 exports.extractConnectorProviderFromUri = extractConnectorProviderFromUri;
 const extractOrganizationFromUri = (uri) => {
-    // https://yali0998@dev.azure.com/yali0998/test-project/_git/test-project
-    // https://github.com/backslash-security-tests/yali-test
     const organization = uri.split('https://')[1].split('/')[1];
     return organization;
 };
