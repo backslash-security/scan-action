@@ -96,7 +96,6 @@ const util_1 = __nccwpck_require__(3126);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-          console.log(github.context.payload);
 
             const sourceBranch = github.context.payload.pull_request.head.ref;
             const targetBranch = github.context.payload.pull_request.base.ref;
