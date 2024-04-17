@@ -105,7 +105,7 @@ function run() {
                 targetBranch = pr.base.ref;
             }
             else {
-                sourceBranch = github.context.payload.ref.split('/').pop();
+                sourceBranch = process.env.GITHUB_REF_NAME;
             }
             const authToken = core.getInput('authToken');
             const enforceBlock = core.getBooleanInput('enforceBlock');
