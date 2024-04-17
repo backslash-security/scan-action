@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.extractOrganizationFromUri = exports.extractConnectorProviderFromUri = exports.getColumns = exports.sortFindingsByType = exports.printSortedFindings = exports.displayFindings = exports.combineColumns = exports.isUndefinedOrEmptyString = exports.specialLog = exports.logTypes = exports.sleep = void 0;
 const types_1 = require("./types");
 const Table = require("cli-table3");
-const core = require("@actions/core");
 const defaultColumnWidth = 30;
 const sleep = (ms) => new Promise(res => setTimeout(() => res(''), ms));
 exports.sleep = sleep;
@@ -13,7 +12,7 @@ exports.logTypes = {
     warning: "\x1b[33m"
 };
 const specialLog = (toPrint, messageType) => {
-    core.info(exports.logTypes[messageType] + toPrint);
+    console.log(exports.logTypes[messageType] + toPrint);
 };
 exports.specialLog = specialLog;
 const isUndefinedOrEmptyString = (str) => str === '' || !str;
@@ -37,23 +36,23 @@ const displayFindings = (findings, columns) => {
         wrapOnWordBoundary: false
     });
     findings.map(exports.combineColumns).forEach(result => table.push(columns.map(column => { var _a; return (_a = result[column.name]) !== null && _a !== void 0 ? _a : ''; })));
-    core.info(table.toString());
+    console.log(table.toString());
 };
 exports.displayFindings = displayFindings;
 const printSortedFindings = (sortedFindings, preTableString) => {
     if (sortedFindings.VULNERABLE_OSS_PACKAGES.length > 0) {
-        core.info(`${preTableString} Vulnerable packages:`);
-        core.info('');
+        console.log(`${preTableString} Vulnerable packages:`);
+        console.log('');
         (0, exports.displayFindings)(sortedFindings.VULNERABLE_OSS_PACKAGES, (0, exports.getColumns)(types_1.PolicyCategory['VULNERABLE_OSS_PACKAGES'], sortedFindings.VULNERABLE_OSS_PACKAGES));
     }
     if (sortedFindings.VULNERABLE_CODE.length > 0) {
-        core.info(`${preTableString} Vulnerable code:`);
-        core.info('');
+        console.log(`${preTableString} Vulnerable code:`);
+        console.log('');
         (0, exports.displayFindings)(sortedFindings.VULNERABLE_CODE, (0, exports.getColumns)(types_1.PolicyCategory['VULNERABLE_CODE'], sortedFindings.VULNERABLE_CODE));
     }
     if (sortedFindings.INSECURE_SECRETS.length > 0) {
-        core.info(`${preTableString} Insecure Secrets:`);
-        core.info('');
+        console.log(`${preTableString} Insecure Secrets:`);
+        console.log('');
         (0, exports.displayFindings)(sortedFindings.INSECURE_SECRETS, (0, exports.getColumns)(types_1.PolicyCategory['INSECURE_SECRETS'], sortedFindings.INSECURE_SECRETS));
     }
     // NEED TO ADD SUPPORT FOR LISENCE AND MALICIOUS!!! TODO!!!

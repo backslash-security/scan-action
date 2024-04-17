@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getScanFinalResult = exports.getScanStatus = exports.startScan = exports.axiosWithAuth = exports.setAuthToken = void 0;
 const axios_1 = require("axios");
-const core = require("@actions/core");
 const baseUrl = 'https://api.app.backslash.security/api';
 var authToken = '';
 const setAuthToken = (token) => authToken = token !== null && token !== void 0 ? token : '';
@@ -20,16 +19,16 @@ const axiosWithAuth = (config) => __awaiter(void 0, void 0, void 0, function* ()
     let retries = 0;
     while (retries <= 3) {
         try {
-            // core.info(config)
-            core.debug('running request with config:');
-            core.debug(JSON.stringify(config));
+            // console.log(config)
+            console.debug('running request with config:');
+            console.debug(JSON.stringify(config));
             const response = yield (0, axios_1.default)(Object.assign(Object.assign({}, config), { baseURL: baseUrl, headers: { Authorization: `Bearer ${authToken}` } }));
-            core.debug('response:');
-            core.debug(JSON.stringify(response.data));
+            console.debug('response:');
+            console.debug(JSON.stringify(response.data));
             return response;
         }
         catch (error) {
-            core.debug(error);
+            console.debug(error);
             retries += 1;
             if (retries === 3 || config.method.toLowerCase() === 'post')
                 return error;

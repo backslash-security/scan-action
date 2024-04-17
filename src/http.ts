@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { AfterScanResponse, ScanStatusRsponse, ScmConnectorProvider, StartScanResponse } from "./types";
-import * as core from '@actions/core';
 
 const baseUrl = 'https://api.app.backslash.security/api'
 
@@ -13,16 +12,16 @@ export const axiosWithAuth = async (config: AxiosRequestConfig) => {
 
     while(retries <= 3){
         try{
-            // core.info(config)
-            core.debug('running request with config:')
-            core.debug(JSON.stringify(config))
+            // console.log(config)
+            console.debug('running request with config:')
+            console.debug(JSON.stringify(config))
             const response = await axios({...config, baseURL: baseUrl, headers: {Authorization: `Bearer ${authToken}`}})
-            core.debug('response:')
-            core.debug(JSON.stringify(response.data))
+            console.debug('response:')
+            console.debug(JSON.stringify(response.data))
             return response
         }
         catch(error){
-            core.debug(error)
+            console.debug(error)
             retries += 1
             if(retries === 3 || config.method.toLowerCase() === 'post') return error
         }

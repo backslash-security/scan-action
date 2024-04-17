@@ -1,6 +1,5 @@
 import { Finding, PolicyCategory, ScmConnectorProvider } from "./types"
 import * as Table from 'cli-table3'
-import * as core from '@actions/core';
 
 export type ColumnConfig = {
     name: string,
@@ -21,7 +20,7 @@ export const logTypes: Record<LogType, string> = {
 }
 
 export const specialLog = (toPrint: string, messageType: LogType) => {
-    core.info(logTypes[messageType] + toPrint);
+    console.log(logTypes[messageType] + toPrint);
 }
 
 export const isUndefinedOrEmptyString = (str: string | undefined) => str === '' || !str
@@ -47,23 +46,23 @@ export const displayFindings = (findings: Finding[], columns: ColumnConfig[] ) =
     
 
     findings.map(combineColumns).forEach(result => table.push(columns.map(column => result[column.name] ?? '')))
-    core.info(table.toString());
+    console.log(table.toString());
 }
 
 export const printSortedFindings = (sortedFindings: Record<PolicyCategory, Finding[]>, preTableString: string) => {
     if(sortedFindings.VULNERABLE_OSS_PACKAGES.length > 0){
-        core.info(`${preTableString} Vulnerable packages:`)
-        core.info('')
+        console.log(`${preTableString} Vulnerable packages:`)
+        console.log('')
         displayFindings(sortedFindings.VULNERABLE_OSS_PACKAGES, getColumns(PolicyCategory['VULNERABLE_OSS_PACKAGES'], sortedFindings.VULNERABLE_OSS_PACKAGES))
     }
     if(sortedFindings.VULNERABLE_CODE.length > 0){
-        core.info(`${preTableString} Vulnerable code:`)
-        core.info('')
+        console.log(`${preTableString} Vulnerable code:`)
+        console.log('')
         displayFindings(sortedFindings.VULNERABLE_CODE, getColumns(PolicyCategory['VULNERABLE_CODE'], sortedFindings.VULNERABLE_CODE))
     }
     if(sortedFindings.INSECURE_SECRETS.length > 0){
-        core.info(`${preTableString} Insecure Secrets:`)
-        core.info('')
+        console.log(`${preTableString} Insecure Secrets:`)
+        console.log('')
         displayFindings(sortedFindings.INSECURE_SECRETS, getColumns(PolicyCategory['INSECURE_SECRETS'], sortedFindings.INSECURE_SECRETS))
     }
 
