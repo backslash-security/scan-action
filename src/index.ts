@@ -32,10 +32,10 @@ async function run() {
         const repositoryName = github.context.payload.repository.name
         const repoUri = github.context.payload.repository.html_url
         const provider = extractConnectorProviderFromUri(repoUri)
-
+        
         const organization: string = github.context.payload.organization.login
         const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
-        core.debug(JSON.stringify(github.context.payload))
+        core.debug(JSON.stringify(github.context))
         core.debug(JSON.stringify(process.env))
         core.debug(JSON.stringify({sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider}));
         
