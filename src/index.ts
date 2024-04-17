@@ -35,7 +35,7 @@ async function run() {
 
         const organization: string = github.context.payload.organization.login
         const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
-      
+        core.debug(JSON.stringify(github.context.payload))
         core.debug(JSON.stringify({sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider}));
         
         setAuthToken(authToken)
