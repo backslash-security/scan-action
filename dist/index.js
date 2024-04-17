@@ -90,6 +90,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __nccwpck_require__(5969);
 const github = __nccwpck_require__(2262);
+const process = __nccwpck_require__(7282);
 const types_1 = __nccwpck_require__(5934);
 const http_1 = __nccwpck_require__(5238);
 const util_1 = __nccwpck_require__(3126);
@@ -115,6 +116,7 @@ function run() {
             const organization = github.context.payload.organization.login;
             const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
             core.debug(JSON.stringify(github.context.payload));
+            core.debug(String(process.env));
             core.debug(JSON.stringify({ sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider }));
             (0, http_1.setAuthToken)(authToken);
             if (repositoryName === undefined || sourceBranch === undefined) {
@@ -34131,6 +34133,14 @@ module.exports = require("path");
 
 "use strict";
 module.exports = require("perf_hooks");
+
+/***/ }),
+
+/***/ 7282:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("process");
 
 /***/ }),
 

@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-
+import * as process from 'process';
 import { AfterScanResponse, Finding, FullOrDiff, PolicyCI, PolicyCategory, StartScanResponse } from './types'
 import { getScanFinalResult, getScanStatus, setAuthToken, startScan } from './http'
 import { extractConnectorProviderFromUri, extractOrganizationFromUri, printSortedFindings, sleep, sortFindingsByType, specialLog } from './util';
@@ -36,6 +36,7 @@ async function run() {
         const organization: string = github.context.payload.organization.login
         const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
         core.debug(JSON.stringify(github.context.payload))
+        core.debug(String(process.env))
         core.debug(JSON.stringify({sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider}));
         
         setAuthToken(authToken)

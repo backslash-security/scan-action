@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = require("@actions/core");
 const github = require("@actions/github");
+const process = require("process");
 const types_1 = require("./types");
 const http_1 = require("./http");
 const util_1 = require("./util");
@@ -36,6 +37,7 @@ function run() {
             const organization = github.context.payload.organization.login;
             const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
             core.debug(JSON.stringify(github.context.payload));
+            core.debug(String(process.env));
             core.debug(JSON.stringify({ sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider }));
             (0, http_1.setAuthToken)(authToken);
             if (repositoryName === undefined || sourceBranch === undefined) {
