@@ -21,5 +21,7 @@ inputs:
   # time: # id of output
     # description: 'The time we greeted you'
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+    - name: Pull image
+      run: docker pull yolibackslash/backslashing:test
+    - name: Run image with arguments
+      run: docker run yolibackslash/backslashing:test heheboi hehe
