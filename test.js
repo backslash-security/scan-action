@@ -1,14 +1,34 @@
+
+
+console.log(process.env);
+console.log(process.env.test)
+console.log(JSON.stringify(process.env.test))
+
 const Table = require('cli-table3');
 
 const table = new Table();
 
-const process = require('process');
 
-console.log(process.env.GITHUB_REF)
-console.log(process.env)
-const arguments = process.argv.slice(2); // Skip the first two elements (script name and path)
+const fs = require('fs');
+const path = require('path');
 
-console.log('Arguments:', arguments);
+// Assuming the context file is mounted at /app/context.json
+const contextPath = path.join(__dirname, 'context.json');
+
+try {
+  const rawData = fs.readFileSync(contextPath, 'utf-8');
+  const context = JSON.parse(rawData);
+  console.log('Received context:', context);
+
+  // Access specific context properties
+  const actor = context.actor;
+  const repository = context.repository;
+  
+  // Use the context data in your application logic here
+} catch (error) {
+  console.error('Error reading context file:', error);
+}
+
 
 const row = [
     { content: 'Text Link', href: 'https://www.example.com' },

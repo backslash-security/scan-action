@@ -8,31 +8,39 @@ const process = require('process');
 async function run() {
     try {
     
+        console.log(process.env);
         
-        console.log(process.env.GITHUB_REF)
-        console.log(process.env)
-        const inputs = process.argv.slice(2); 
-      
-        let sourceBranch: string = process.env.GITHUB_HEAD_REF
-        let targetBranch: string | undefined = process.env.GITHUB_BASE_REF
+        console.log(1);
+        
+        let sourceBranch: string = process.env.PR_SOURCE_BRANCH//GITHUB_HEAD_REF
+        let targetBranch: string | undefined = process.env.PR_TARGET_BRANCH//GITHUB_BASE_REF
 
         if(sourceBranch === ''){
-          sourceBranch = process.env.GITHUB_REF.split('/').pop()
+          sourceBranch = process.env.SOURCE_BRANCH.split('/').pop()
           targetBranch = undefined
         }
+console.log(2);
 
-        const authToken: string | undefined = inputs[0];
+        const authToken: string | undefined = process.env.AUTH_TOKEN;
       
 
-        const enforceBlock: boolean = inputs[1] === 'true';
-        const isAll: boolean = inputs[2];
+        const enforceBlock: boolean = process.env.IGNORE_BLOCK == 'true';
+        const isAll: boolean = process.env.ALL_FINDINGS == 'true';
         
-        const repositoryName = process.env.GITHUB_REPOSITORY
-        const providerUri = process.env.GITHUB_SERVER_URL
+        const repositoryName = process.env.REPOSITORY_NAME
+        const providerUri = process.env.PROVIDER_URI
         const provider = extractConnectorProviderFromUri(providerUri)
 
-        const organization: string = process.env.GITHUB_REPOSITORY_OWNER
+        let organization: string = process.env.ORGANIZATION
+        if(!organization || organization === ''){
+            organization = repositoryName.split('/')[0]
+        }
+        console.log(3);
+
+        console.log({repositoryName});
+        
         const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
+      console.log(4);
       
         console.debug(JSON.stringify({sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, providerUri, provider}));
         

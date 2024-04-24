@@ -1,4 +1,13 @@
-FROM ubuntu:14.04
-COPY ./file.sh /
-run chmod +x file.sh
-ENTRYPOINT ["/file.sh"]
+FROM node:18-slim
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+EXPOSE 3000
+
+RUN npm run build
+
+CMD [ "npm", "start" ]
