@@ -46,7 +46,7 @@ async function run() {
         }
 
 
-        const startScanResponse: StartScanResponse = await startScan(repoNameWithoutOwner, sourceBranch, provider, organization, targetBranch)
+        const startScanResponse: StartScanResponse = await startScan(repoNameWithoutOwner, sourceBranch, provider, organization, targetBranch, isAll)
         
         if(!startScanResponse){
             specialLog('Scan failed, we encountered an internal error', 'error');
@@ -78,7 +78,7 @@ async function run() {
 
         core.info(`Your scan has completed`)
 
-        const finalResult = await getScanFinalResult(scanId, isAll)
+        const finalResult = await getScanFinalResult(scanId)
 
         if(finalResult === undefined){
             return core.setFailed('Scan failed, we encountered an internal error')

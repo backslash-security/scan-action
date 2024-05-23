@@ -29,13 +29,14 @@ export const axiosWithAuth = async (config: AxiosRequestConfig) => {
     }
 }
 
-export const startScan = async (repository: string, branch: string, provider: ScmConnectorProvider, organization, targetBranch: string | undefined): Promise<StartScanResponse | undefined> => {
+export const startScan = async (repository: string, branch: string, provider: ScmConnectorProvider, organization, targetBranch: string | undefined, avoidComparingDifferences: boolean): Promise<StartScanResponse | undefined> => {
     const response = (await axiosWithAuth({url: `v2/scan`, method: 'post', data: {
         repository,
         branch,
         scmProvider: provider,
         organization,
-        baselineBranch: targetBranch
+        baselineBranch: targetBranch,
+        avoidComparingDifferences
     }}))
     if(response.response && response.response.status === 400) return undefined
     return response.data
@@ -46,7 +47,7 @@ export const getScanStatus = async (scanId: string): Promise<ScanStatusRsponse |
     return response.data ?? undefined
 }
 
-export const getScanFinalResult = async (scanId: string, isAll: boolean): Promise<AfterScanResponse | undefined> => {
-    const response = await axiosWithAuth({url: `v2/query/CI?scanId=${scanId}&allIssues=${isAll}`, method: 'get'})
+export const getScanFinalResult = async (scanId: string): Promise<AfterScanResponse | undefined> => {
+    const response = await axiosWithAuth({url: `v2/query/CI?scanId=${scanId}`, method: 'get'})
     return response.data ?? undefined
 }
