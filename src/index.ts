@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as process from 'process';
 
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 
 
 async function run() {
@@ -46,11 +46,19 @@ async function run() {
         }
         const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --avoidComparingDifferences=${avoidComparingDifferences} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`
 
-        exec(command,
-        (error, stdout, stderr) => {
-            console.log(stdout);
-            if (error !== null) {
-                return core.setFailed(stderr)
+        const child = spawn(command)
+
+        child.stdout.on('data', (data) => {
+            console.log(data)
+        });
+        
+        child.stderr.on('data', (data) => {
+            console.error(data);
+        });
+        
+        child.on('close', (code) => {
+            if(code !== 0){
+                core.setFailed(`Script exited with code: ${code}`)
             }
         });
     }
