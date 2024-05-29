@@ -7,11 +7,11 @@ inputs:
     description: 'Backslash autherization token'
     required: true
     default: ''
-  enforceBlock:
-    description: 'Enforce pipeline blocking if scan fails?'
+  ignoreBlock:
+    description: 'Ignore pipeline blocking findings?'
     type: boolean
     required: true
-    default: true
+    default: false
   avoidComparingDifferences:
     description: 'If set to true, the scan will return all findings, otherwise the scan will return only findings new to the pr'
     required: true
