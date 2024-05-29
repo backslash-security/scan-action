@@ -12,7 +12,6 @@ async function run() {
         const pr = github.context.payload.pull_request
         const isDebug = core.isDebug()
 
-        console.log(process.env)
         let sourceBranch: string
         let targetBranch: string | undefined = undefined
 
@@ -45,23 +44,13 @@ async function run() {
         if(repositoryName === undefined || sourceBranch === undefined){
             return core.setFailed('Repo or branch not defined')
         }
-        core.debug('running cli')
-        
-     
-
         const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --avoidComparingDifferences=${avoidComparingDifferences} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`
-        console.log({command})
 
         exec(command,
         (error, stdout, stderr) => {
             console.log(stdout);
-            if(stderr){
-                console.log({stderr});
-                
-                return core.setFailed(stderr)
-            }
             if (error !== null) {
-                console.log(`exec error: ${error}`);
+                return core.setFailed(stderr)
             }
         });
     }
