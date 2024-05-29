@@ -50,10 +50,10 @@ function run() {
             const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --avoidComparingDifferences=${avoidComparingDifferences} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
-                console.log(data);
+                console.log(data.toString('utf8'));
             });
             child.stderr.on('data', (data) => {
-                console.error(data);
+                console.error(data.toString('utf8'));
             });
             child.on('close', (code) => {
                 if (code !== 0) {

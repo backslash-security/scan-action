@@ -49,11 +49,11 @@ async function run() {
         const child = spawn('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
 
         child.stdout.on('data', (data) => {
-            console.log(data)
+            console.log(data.toString('utf8'))
         });
         
         child.stderr.on('data', (data) => {
-            console.error(data);
+            console.error(data.toString('utf8'));
         });
         
         child.on('close', (code) => {
