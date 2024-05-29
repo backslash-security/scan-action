@@ -18,7 +18,7 @@ function run() {
         try {
             const pr = github.context.payload.pull_request;
             const isDebug = process.env.GITHUB_ACTIONS_DEBUG_MODE;
-            core.debug(`${process.env}`);
+            console.log(process.env);
             let sourceBranch;
             let targetBranch = undefined;
             if (pr) {

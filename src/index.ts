@@ -12,7 +12,7 @@ async function run() {
         const pr = github.context.payload.pull_request
         const isDebug = process.env.GITHUB_ACTIONS_DEBUG_MODE
 
-        core.debug(`${process.env}`)
+        console.log(process.env)
         let sourceBranch: string
         let targetBranch: string | undefined = undefined
 
