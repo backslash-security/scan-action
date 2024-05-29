@@ -52,12 +52,13 @@ export type AfterScanResponse = {
 export enum ScmConnectorProvider {
     Github = 'github',
     GithubEnterpriseServer = 'github-enterprise-server',
+    GithubEnterpriseOnPremise = 'github-enterprise-on-premise',
     Gitlab = 'gitlab',
     GitlabOnPremise = 'gitlab-on-premise',
     Bitbucket = 'bitbucket',
     BitBucketOnPremise = 'bitbucket-on-premise',
     AzureRepos = 'azure-repos',
-}
+  }
 
 export enum FullOrDiff {
     FULL = 'full',

@@ -1,8 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as process from 'process';
-import { PolicyCI, PolicyCategory, StartScanResponse } from './types';
-import { extractSimpleUri, printSortedFindings, sleep, sortFindingsByType, specialLog } from './util';
+
 import { exec } from 'child_process';
 
 
@@ -24,15 +23,14 @@ async function run() {
         }
 
         const authToken: string | undefined = core.getInput('authToken');
-      
+    
+        const ignoreBlock: boolean = core.getBooleanInput('ignoreBlock')
+        const avoidComparingDifferences: boolean = core.getBooleanInput('avoidComparingDifferences');
+        const isOnPremise: boolean = core.getBooleanInput('isOnPremise');
 
-        const enforceBlock: boolean | undefined = core.getBooleanInput('enforceBlock');
-        const ignoreBlock: boolean = core.getBooleanInput('ignoreBlock') || enforceBlock === false
-        const isAll: boolean = core.getBooleanInput('allFindings');
-        
+        const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
+
         const repositoryName = github.context.payload.repository.name
-        const repoUri = github.context.payload.repository.html_url
-        const provider = extractSimpleUri(repoUri)
         
         const organization: string = github.context.payload.organization.login
         const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
@@ -41,7 +39,7 @@ async function run() {
             return core.setFailed('Repo or branch not defined')
         }
         
-        exec(`sh run-cli.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --isAll=${isAll} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --providerUri=https://${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`,
+        exec(`curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh && chmod a+x ./run-cli.sh && ./run-cli.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --avoidComparingDifferences=${avoidComparingDifferences} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`,
         (error, stdout, stderr) => {
             console.log(stdout);
             console.log(stderr);

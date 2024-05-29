@@ -26,6 +26,7 @@ var ScmConnectorProvider;
 (function (ScmConnectorProvider) {
     ScmConnectorProvider["Github"] = "github";
     ScmConnectorProvider["GithubEnterpriseServer"] = "github-enterprise-server";
+    ScmConnectorProvider["GithubEnterpriseOnPremise"] = "github-enterprise-on-premise";
     ScmConnectorProvider["Gitlab"] = "gitlab";
     ScmConnectorProvider["GitlabOnPremise"] = "gitlab-on-premise";
     ScmConnectorProvider["Bitbucket"] = "bitbucket";

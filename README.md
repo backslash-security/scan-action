@@ -1,6 +1,8 @@
 # scan-action
 A github aciton for scanning your project with backslash
 
+Uses the generic backslash scan cli
+
 ## Inputs
 
 ### `authToken`
@@ -11,9 +13,13 @@ A github aciton for scanning your project with backslash
 
 **Required** Enforce pipeline blocking if scan fails?
 
-### `allFindings`
+### `avoidComparingDifferences`
 
 **Required** If set to true, the scan will return all findings, otherwise the scan will return only findings new to the pr.
+
+### `isOnPremise`
+
+**Required** Wether or not the action is being run on a github-on-premise instance.
 
 ## Example usage
 
@@ -33,7 +39,7 @@ jobs:
         with:
           authToken: ${{ secrets.AUTH_TOKEN }}
           enforceBlock: true
-          allFindings: true
+          avoidComparingDifferences: true
 ```
 
 in order to build run

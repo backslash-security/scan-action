@@ -56,9 +56,9 @@ const getScanStatus = (scanId) => __awaiter(void 0, void 0, void 0, function* ()
     return (_a = response.data) !== null && _a !== void 0 ? _a : undefined;
 });
 exports.getScanStatus = getScanStatus;
-const getScanFinalResult = (scanId, isAll) => __awaiter(void 0, void 0, void 0, function* () {
+const getScanFinalResult = (scanId, avoidComparingDifferences) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
-    const response = yield (0, exports.axiosWithAuth)({ url: `v2/query/CI?scanId=${scanId}&allIssues=${isAll}`, method: 'get' });
+    const response = yield (0, exports.axiosWithAuth)({ url: `v2/query/CI?scanId=${scanId}&allIssues=${avoidComparingDifferences}`, method: 'get' });
     return (_b = response.data) !== null && _b !== void 0 ? _b : undefined;
 });
 exports.getScanFinalResult = getScanFinalResult;

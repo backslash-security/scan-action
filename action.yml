@@ -1,6 +1,6 @@
 
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'Backslash scan'
+description: 'Scan your application with backslash'
 
 inputs:
   authToken:
@@ -12,14 +12,16 @@ inputs:
     type: boolean
     required: true
     default: true
-  allFindings:
+  avoidComparingDifferences:
     description: 'If set to true, the scan will return all findings, otherwise the scan will return only findings new to the pr'
     required: true
     type: boolean
     default: false
-# outputs:
-  # time: # id of output
-    # description: 'The time we greeted you'
+  isOnPremise:
+    description: 'Wether or not the action is being run on a github-on-premise instance'
+    required: true
+    type: boolean
+    default: false
 runs:
   using: 'node20'
   main: 'dist/index.js'

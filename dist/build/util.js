@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractOrganizationFromUri = exports.extractConnectorProviderFromUri = exports.getColumns = exports.sortFindingsByType = exports.printSortedFindings = exports.displayFindings = exports.combineColumns = exports.isUndefinedOrEmptyString = exports.specialLog = exports.logTypes = exports.sleep = void 0;
+exports.extractOrganizationFromUri = exports.extractSimpleUri = exports.getColumns = exports.sortFindingsByType = exports.printSortedFindings = exports.displayFindings = exports.combineColumns = exports.isUndefinedOrEmptyString = exports.specialLog = exports.logTypes = exports.sleep = void 0;
 const types_1 = require("./types");
 const Table = require("cli-table3");
 const core = require("@actions/core");
@@ -92,14 +92,8 @@ const getColumns = (category, findings) => {
     return [];
 };
 exports.getColumns = getColumns;
-const extractConnectorProviderFromUri = (uri) => {
-    const host = uri.split('https://')[1].split('/')[0];
-    if (host === 'github.com')
-        return types_1.ScmConnectorProvider['Github'];
-    else
-        return types_1.ScmConnectorProvider['AzureRepos'];
-};
-exports.extractConnectorProviderFromUri = extractConnectorProviderFromUri;
+const extractSimpleUri = (uri) => uri.split('https://')[1].split('/')[0];
+exports.extractSimpleUri = extractSimpleUri;
 const extractOrganizationFromUri = (uri) => {
     const organization = uri.split('https://')[1].split('/')[1];
     return organization;

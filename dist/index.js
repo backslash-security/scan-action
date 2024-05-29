@@ -63,9 +63,9 @@ const getScanStatus = (scanId) => __awaiter(void 0, void 0, void 0, function* ()
     return (_a = response.data) !== null && _a !== void 0 ? _a : undefined;
 });
 exports.getScanStatus = getScanStatus;
-const getScanFinalResult = (scanId, isAll) => __awaiter(void 0, void 0, void 0, function* () {
+const getScanFinalResult = (scanId, avoidComparingDifferences) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
-    const response = yield (0, exports.axiosWithAuth)({ url: `v2/query/CI?scanId=${scanId}&allIssues=${isAll}`, method: 'get' });
+    const response = yield (0, exports.axiosWithAuth)({ url: `v2/query/CI?scanId=${scanId}&allIssues=${avoidComparingDifferences}`, method: 'get' });
     return (_b = response.data) !== null && _b !== void 0 ? _b : undefined;
 });
 exports.getScanFinalResult = getScanFinalResult;
@@ -109,7 +109,7 @@ function run() {
             }
             const authToken = core.getInput('authToken');
             const enforceBlock = core.getBooleanInput('enforceBlock');
-            const isAll = core.getBooleanInput('allFindings');
+            const avoidComparingDifferences = core.getBooleanInput('avoidComparingDifferences');
             const repositoryName = github.context.payload.repository.name;
             const repoUri = github.context.payload.repository.html_url;
             const provider = (0, util_1.extractConnectorProviderFromUri)(repoUri);
@@ -117,7 +117,7 @@ function run() {
             const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
             core.debug(JSON.stringify(github.context));
             core.debug(JSON.stringify(process.env));
-            core.debug(JSON.stringify({ sourceBranch, targetBranch, enforceBlock, isAll, repositoryName, repoNameWithoutOwner, organization, repoUri, provider }));
+            core.debug(JSON.stringify({ sourceBranch, targetBranch, enforceBlock, avoidComparingDifferences, repositoryName, repoNameWithoutOwner, organization, repoUri, provider }));
             (0, http_1.setAuthToken)(authToken);
             if (repositoryName === undefined || sourceBranch === undefined) {
                 return core.setFailed('Repo or branch not defined');
@@ -146,7 +146,7 @@ function run() {
                 yield (0, util_1.sleep)(1000 * 10);
             }
             core.info(`Your scan has completed`);
-            const finalResult = yield (0, http_1.getScanFinalResult)(scanId, isAll);
+            const finalResult = yield (0, http_1.getScanFinalResult)(scanId, avoidComparingDifferences);
             if (finalResult === undefined) {
                 return core.setFailed('Scan failed, we encountered an internal error');
             }
