@@ -56,6 +56,8 @@ async function run() {
         (error, stdout, stderr) => {
             console.log(stdout);
             if(stderr){
+                console.log({stderr});
+                
                 return core.setFailed(stderr)
             }
             if (error !== null) {
