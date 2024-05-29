@@ -41,7 +41,7 @@ function run() {
                 return core.setFailed('Repo or branch not defined');
             }
             core.debug('running cli');
-            (0, child_process_1.exec)(`curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh && chmod a+x ./run-cli.sh && ./run-cli.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --avoidComparingDifferences=${avoidComparingDifferences} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`, (error, stdout, stderr) => {
+            (0, child_process_1.exec)(`curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --avoidComparingDifferences=${avoidComparingDifferences} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`, (error, stdout, stderr) => {
                 console.log(stdout);
                 console.log(stderr);
                 if (error !== null) {
