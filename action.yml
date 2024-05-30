@@ -16,10 +16,10 @@ inputs:
     description: 'If set to true, the scan will return only findings new to the pr otherwise the scan will return all findings'
     required: false
     type: boolean
-    default: true
+    default: false
   isOnPremise:
     description: 'Wether or not the action is being run on a github-on-premise instance'
-    required: true
+    required: false
     type: boolean
     default: false
 runs:
