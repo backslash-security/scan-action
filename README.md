@@ -39,7 +39,7 @@ jobs:
         with:
           authToken: ${{ secrets.AUTH_TOKEN }}
           enforceBlock: true
-          avoidComparingDifferences: true
+          scanPr: prScan
 ```
 
 in order to build run
