@@ -31,7 +31,7 @@ async function run() {
         core.debug('auth token length ' + authToken.length)
 
         const ignoreBlock: boolean = core.getBooleanInput('ignoreBlock')
-        const avoidComparingDifferences: boolean = core.getBooleanInput('avoidComparingDifferences');
+        const prScan: boolean = core.getBooleanInput('prScan');
         const isOnPremise: boolean = core.getBooleanInput('isOnPremise');
 
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
@@ -44,7 +44,7 @@ async function run() {
         if(repositoryName === undefined || sourceBranch === undefined){
             return core.setFailed('Repo or branch not defined')
         }
-        const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --avoidComparingDifferences=${avoidComparingDifferences} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`
+        const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`
 
         const child = spawn('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
 

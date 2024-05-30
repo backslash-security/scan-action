@@ -13,13 +13,13 @@ Uses the generic backslash scan cli
 
 **Required** Enforce pipeline blocking if scan fails?
 
-### `avoidComparingDifferences`
-
-**Required** If set to true, the scan will return all findings, otherwise the scan will return only findings new to the pr.
-
 ### `isOnPremise`
 
 **Required** Wether or not the action is being run on a github-on-premise instance.
+
+### `prScan`
+
+**Optional** If set to true, the scan will return only findings new to the pr otherwise the scan will return all findings
 
 ## Example usage
 

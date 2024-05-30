@@ -12,11 +12,11 @@ inputs:
     type: boolean
     required: true
     default: false
-  avoidComparingDifferences:
-    description: 'If set to true, the scan will return all findings, otherwise the scan will return only findings new to the pr'
-    required: true
+  prScan:
+    description: 'If set to true, the scan will return only findings new to the pr otherwise the scan will return all findings'
+    required: false
     type: boolean
-    default: false
+    default: true
   isOnPremise:
     description: 'Wether or not the action is being run on a github-on-premise instance'
     required: true
