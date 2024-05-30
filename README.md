@@ -9,9 +9,9 @@ Uses the generic backslash scan cli
 
 **Required** Your backslash api token.
 
-### `enforceBlock`
+### `ignoreBlock`
 
-**Required** Enforce pipeline blocking if scan fails?
+**Required** ignore pipeline blocking if scan fails?
 
 ### `isOnPremise`
 
@@ -38,7 +38,7 @@ jobs:
         uses: backslash-security/scan-action@main
         with:
           authToken: ${{ secrets.AUTH_TOKEN }}
-          enforceBlock: true
+          ignoreBlock: false
           scanPr: prScan
 ```
 
