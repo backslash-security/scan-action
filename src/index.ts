@@ -11,7 +11,7 @@ async function run() {
 
         const pr = github.context.payload.pull_request
         const isDebug = core.isDebug()
-
+        
         let sourceBranch: string
         let targetBranch: string | undefined = undefined
 
@@ -60,6 +60,16 @@ async function run() {
             if(code !== 0){
                 core.setFailed(`Script exited with code: ${code}`)
             }
+        });
+
+        const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+        await octokit.rest.issues.createComment({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number:   
+            github.context.issue.number,
+            body:   
+        'This is a comment from GitHub Actions!',
         });
     }
 
