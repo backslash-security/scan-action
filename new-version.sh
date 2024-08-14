@@ -1,0 +1,1 @@
+npm run build && git checkout -b $1 && git add . && git commit -a -m "Auto-commit" && git tag $1 $1 && git push origin tag $1

@@ -46,3 +46,7 @@ in order to build run
 ```
 npm run build
 ```
+
+in order to add new tag
+
+git checkout -b bname && git tag bname bname && git push origin tag bname
