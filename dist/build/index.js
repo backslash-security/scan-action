@@ -44,7 +44,7 @@ function run() {
             }
             let githubExtraInput = '';
             if (!disablePrComments && githubAccessToken && githubAccessToken.length) {
-                githubExtraInput = `--githubIssueNumber=${github.context.issue.number} --githubAccessToken=${githubAccessToken}`;
+                githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubAccessToken}`;
             }
             const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
