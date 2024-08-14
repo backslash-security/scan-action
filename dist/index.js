@@ -54,12 +54,14 @@ function run() {
             if (!disablePrComments && githubAccessToken && githubAccessToken.length) {
                 console.log(2);
                 const octokit = github.getOctokit(githubAccessToken);
-                yield octokit.rest.issues.createComment({
+                const config = {
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     issue_number: github.context.issue.number,
                     body: 'This is a comment from GitHub Actions!',
-                });
+                };
+                console.log({ config });
+                yield octokit.rest.issues.createComment(config);
             }
             const child = (0, child_process_1.spawn)('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {

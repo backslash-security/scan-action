@@ -54,14 +54,15 @@ async function run() {
             console.log(2);
             
             const octokit = github.getOctokit(githubAccessToken)
-            await octokit.rest.issues.createComment({
+            const config = {
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
-                issue_number:   
-                github.context.issue.number,
-                body:   
-            'This is a comment from GitHub Actions!',
-            });
+                issue_number: github.context.issue.number,
+                body: 'This is a comment from GitHub Actions!',
+            }
+            console.log({config});
+            
+            await octokit.rest.issues.createComment(config);
         }
 
         const child = spawn('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
