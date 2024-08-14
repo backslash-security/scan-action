@@ -49,20 +49,11 @@ function run() {
             if (repositoryName === undefined || sourceBranch === undefined) {
                 return core.setFailed('Repo or branch not defined');
             }
-            const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`;
-            console.log(1);
+            let githubExtraInput = '';
             if (!disablePrComments && githubAccessToken && githubAccessToken.length) {
-                console.log(2);
-                const octokit = github.getOctokit(githubAccessToken);
-                const config = {
-                    owner: github.context.repo.owner,
-                    repo: github.context.repo.repo,
-                    issue_number: github.context.issue.number,
-                    body: 'This is a comment from GitHub Actions!',
-                };
-                console.log({ config });
-                yield octokit.rest.issues.createComment(config);
+                githubExtraInput = `--githubIssueNumber=${github.context.issue.number} --githubAccessToken=${githubAccessToken}`;
             }
+            const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
                 console.log(data.toString('utf8'));
