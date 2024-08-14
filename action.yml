@@ -22,6 +22,16 @@ inputs:
     required: false
     type: boolean
     default: false
+  githubToken:
+    description: 'Github access token'
+    required: false
+    type: boolean
+    default: ''
+  disablePrComments:
+    description: 'Disable pr comments'
+    required: false
+    type: boolean
+    default: false
 runs:
   using: 'node20'
   main: 'dist/index.js'
