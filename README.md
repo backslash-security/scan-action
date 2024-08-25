@@ -46,3 +46,7 @@ in order to build run
 ```
 npm run build
 ```
+
+in order to add new tag
+
+use ./new-version.sh

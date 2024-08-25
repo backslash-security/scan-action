@@ -26,13 +26,15 @@ async function run() {
         core.debug('STARTING')
 
         const authToken: string | undefined = core.getInput('authToken');
-    
+        const githubAccessToken: string | undefined = core.getInput('githubToken');
+
 
         core.debug('auth token length ' + authToken.length)
 
         const ignoreBlock: boolean = core.getBooleanInput('ignoreBlock')
         const prScan: boolean = core.getBooleanInput('prScan');
         const isOnPremise: boolean = core.getBooleanInput('isOnPremise');
+        const disablePrComments: boolean = core.getBooleanInput('disablePrComments');
 
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
 
@@ -44,9 +46,13 @@ async function run() {
         if(repositoryName === undefined || sourceBranch === undefined){
             return core.setFailed('Repo or branch not defined')
         }
-        const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`
+        
+        let githubExtraInput = ''
+        if(!disablePrComments && githubAccessToken && githubAccessToken.length){
+            githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubAccessToken}`
+        }
 
-
+        const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput}`
         const child = spawn('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
 
         child.stdout.on('data', (data) => {

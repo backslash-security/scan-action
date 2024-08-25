@@ -29,10 +29,12 @@ function run() {
             }
             core.debug('STARTING');
             const authToken = core.getInput('authToken');
+            const githubAccessToken = core.getInput('githubToken');
             core.debug('auth token length ' + authToken.length);
             const ignoreBlock = core.getBooleanInput('ignoreBlock');
             const prScan = core.getBooleanInput('prScan');
             const isOnPremise = core.getBooleanInput('isOnPremise');
+            const disablePrComments = core.getBooleanInput('disablePrComments');
             const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github';
             const repositoryName = github.context.payload.repository.name;
             const organization = github.context.payload.organization.login;
@@ -40,7 +42,11 @@ function run() {
             if (repositoryName === undefined || sourceBranch === undefined) {
                 return core.setFailed('Repo or branch not defined');
             }
-            const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug}`;
+            let githubExtraInput = '';
+            if (!disablePrComments && githubAccessToken && githubAccessToken.length) {
+                githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubAccessToken}`;
+            }
+            const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
                 console.log(data.toString('utf8'));
