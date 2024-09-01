@@ -26,8 +26,6 @@ async function run() {
         core.debug('STARTING')
 
         const authToken: string | undefined = core.getInput('authToken');
-        const githubAccessToken: string | undefined = core.getInput('githubToken');
-
 
         core.debug('auth token length ' + authToken.length)
 
@@ -48,8 +46,8 @@ async function run() {
         }
         
         let githubExtraInput = ''
-        if(!disablePrComments && githubAccessToken && githubAccessToken.length){
-            githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubAccessToken}`
+        if(!disablePrComments){
+            githubExtraInput = `--providerPrNumber=${github.context.issue.number}`
         }
 
         const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput}`
