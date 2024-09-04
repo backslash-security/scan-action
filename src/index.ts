@@ -33,7 +33,8 @@ async function run() {
         const prScan: boolean = core.getBooleanInput('prScan');
         const isOnPremise: boolean = core.getBooleanInput('isOnPremise');
         const disablePrComments: boolean = core.getBooleanInput('disablePrComments');
-
+        console.log(process.env);
+        
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
 
         const repositoryName = github.context.payload.repository.name
