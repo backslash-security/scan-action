@@ -33,7 +33,9 @@ async function run() {
         const prScan: boolean = core.getBooleanInput('prScan');
         const isOnPremise: boolean = core.getBooleanInput('isOnPremise');
         const disablePrComments: boolean = core.getBooleanInput('disablePrComments');
-        const githubToken = process.env.ACTIONS_RUNTIME_TOKEN
+        
+
+        let githubToken = process.env.ACTIONS_RUNTIME_TOKEN
 
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
 
@@ -46,14 +48,14 @@ async function run() {
             return core.setFailed('Repo or branch not defined')
         }
         
+        githubToken = core.getInput('githubToken')
+
         let githubExtraInput = ''
         if(!disablePrComments){
             githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`
         }
 
         const command = `curl https://s3.amazonaws.com/cli-test-bucket-2.446867341664/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput}`
-        console.log({command});
-        
         const child = spawn('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
 
         child.stdout.on('data', (data) => {
