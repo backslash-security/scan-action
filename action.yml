@@ -27,6 +27,9 @@ inputs:
     required: false
     type: boolean
     default: false
+  githubToken:
+    description: 'Github auth token'
+    required: false
 runs:
   using: 'node20'
   main: 'dist/index.js'
