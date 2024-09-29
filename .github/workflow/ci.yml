@@ -1,0 +1,28 @@
+name: CI Scanner
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  API_KEY: ${{ secrets.BACKSLASH_API_KEY }}
+
+
+jobs:
+  backslash_scan_job:
+    name: Backslash scan
+    steps:
+      - name: Backslash scan step
+        uses: backslash-security/scan-action@main
+        with:
+          authToken: ${{ env.API_KEY }}
+          prScan: true
+          disablePrComments: false
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: Backslash-report
+          path: Backslash-scan-results/
+          retention-days: 10
