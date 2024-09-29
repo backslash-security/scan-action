@@ -15,7 +15,7 @@ Input | Type | Description
 
 ## Example usage
 
-### Simple usage
+### Simple
 ```yaml
 on:
   pull_request:
