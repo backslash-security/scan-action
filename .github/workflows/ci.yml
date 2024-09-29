@@ -12,6 +12,7 @@ env:
 jobs:
   backslash_scan_job:
     name: Backslash scan
+    runs-on: ubuntu-latest
     steps:
       - name: Backslash scan step
         uses: backslash-security/scan-action@main
