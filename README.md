@@ -1,28 +1,21 @@
 # scan-action
-A github aciton for scanning your project with backslash
-
-Uses the generic backslash scan cli
+A github action for scanning your project using Backslash
 
 ## Inputs
 
-### `authToken`
-
-**Required** Your backslash api token.
-
-### `ignoreBlock`
-
-**Required** ignore pipeline blocking if scan fails?
-
-### `isOnPremise`
-
-**Required** Wether or not the action is being run on a github-on-premise instance.
-
-### `prScan`
-
-**Optional** If set to true, the scan will return only findings new to the pr otherwise the scan will return all findings
+Input | Type | Description
+--- | --- | ---
+**Required:** |  |
+`authToken` | **string** | Your backslash api token
+`ignoreBlock` | **boolean** | Ignore pipeline blocking if scan fails
+**Optional:** |  |
+`isOnPremise` | **boolean** | Wether or not the action is being run on a github-on-premise instance
+`prScan` | **boolean** | If set to true, the scan will return only findings new to the pr otherwise the scan will return all findings
+`localExport` | **boolean** | If set to true, the scan result will be stored into json file locally and could be uploaded to the GHA artifacts
 
 ## Example usage
 
+### Simple usage
 ```yaml
 on:
   pull_request:
@@ -39,14 +32,51 @@ jobs:
         with:
           authToken: ${{ secrets.AUTH_TOKEN }}
           ignoreBlock: false
-          scanPr: prScan
+          scanPr: true
 ```
 
-in order to build run
+### Scan and upload artifact
+```yaml
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  backslash_scan_job:
+    runs-on: self-hosted
+    name: Backslash scan
+    steps:
+      - name: Backslash scan step
+        id: bscan
+        uses: backslash-security/scan-action@main
+        with:
+          authToken: ${{ secrets.AUTH_TOKEN }}
+          ignoreBlock: false
+          scanPr: true
+          localExport: true
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: Backslash-report
+          path: Backslash-scan-results/
+          retention-days: 10
 ```
+
+
+
+## Deployment & Contribute
+installation:
+```bash
+npm i
+brew install ncc
+```
+
+Build:
+```bash
 npm run build
 ```
 
-in order to add new tag
-
-use ./new-version.sh
+New tag:
+```bash
+./new-version.sh tag-name
+```

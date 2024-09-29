@@ -4,16 +4,21 @@ description: 'Scan your application with backslash'
 
 inputs:
   authToken:
-    description: 'Backslash autherization token'
+    description: 'Backslash authorization token'
     required: true
     default: ''
   ignoreBlock:
-    description: 'Ignore pipeline blocking findings?'
+    description: 'Ignore pipeline blocking findings'
     type: boolean
     required: true
     default: false
   prScan:
     description: 'If set to true, the scan will return only findings new to the pr otherwise the scan will return all findings'
+    required: false
+    type: boolean
+    default: false
+  localExport:
+    description: 'If set to true, the scan result will be stored into json file locally and could be uploaded to the GHA artifacts'
     required: false
     type: boolean
     default: false
