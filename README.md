@@ -58,7 +58,7 @@ jobs:
           ignoreBlock: false
           scanPr: true
           disablePrComments: false
-          githubToken: ${{ secrets.GITHUB_TOKEN}}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Scan and upload artifact
