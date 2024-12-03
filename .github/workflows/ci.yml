@@ -10,11 +10,6 @@ env:
 
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: compile
-        run: npm run build
   backslash_scan_job:
     name: Backslash scan
     runs-on: ubuntu-latest
