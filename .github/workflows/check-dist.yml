@@ -45,10 +45,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           npm run build
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git add dist/
-            git commit -m "Build: Update dist/ directory"
-            git push
-          fi
+          git add dist/
+          git commit -m "Build: Update dist/ directory"
+          git push
