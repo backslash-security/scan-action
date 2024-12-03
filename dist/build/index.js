@@ -60,8 +60,8 @@ function run() {
             console.log(`Generated hash ${generatedHash}`);
             const fetchedHash = (0, fs_1.readFileSync)(cliShaFileName).toString('utf-8');
             console.log(`fetched hash ${fetchedHash}`);
-            if (generatedHash !== fetchedHash) {
-                return core.setFailed(`Checksum failed`);
+            if (String(generatedHash) !== String(fetchedHash)) {
+                return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`);
             }
             const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
