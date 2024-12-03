@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Dependencies
         id: install
-        run: npm i
+        run: npm i && npm i -g ncc
 
       - name: Build dist/ Directory
         id: build
