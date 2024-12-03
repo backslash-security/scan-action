@@ -46,6 +46,8 @@ async function run() {
         if(repositoryName === undefined || sourceBranch === undefined){
             return core.setFailed('Repo or branch not defined')
         }
+        console.log(`Cli sha matches`);
+        
 
         let githubExtraInput = ''
         if(!disablePrComments){
