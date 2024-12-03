@@ -38,26 +38,23 @@ jobs:
         id: install
         run: npm i && npm i -g @vercel/ncc
 
-      - name: Build dist/ Directory
-        id: build
-        run: npm run build
-      - name: Commit and Push Changes
+      - name: Build and push
         id: commit
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # Determine the correct branch name
+          if [ "$GITHUB_HEAD_REF" != "" ]; then
+            branch_name="$GITHUB_HEAD_REF"
+          else
+            branch_name=$(echo "${GITHUB_REF#refs/heads/}")
+          fi
+          echo "Detected branch: $branch_name"
+          git checkout "$branch_name"
+          npm run build
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            # Determine the correct branch name
-            if [ "$GITHUB_HEAD_REF" != "" ]; then
-              branch_name="$GITHUB_HEAD_REF"
-            else
-              branch_name=$(echo "${GITHUB_REF#refs/heads/}")
-            fi
-            echo "Detected branch: $branch_name"
-
-            git checkout "$branch_name"
             git add dist/
             git commit -m "Build: Update dist/ directory"
             git push
