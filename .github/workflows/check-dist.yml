@@ -1,4 +1,4 @@
-# this auto compiles and commit the
+# this auto compiles and commit the typescript code
 name: Compile typescript
 
 on:
