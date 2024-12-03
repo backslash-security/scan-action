@@ -57,9 +57,9 @@ function run() {
             yield (0, util_1.downloadFile)(productionS3CLIUrl, cliRunnerFileName);
             yield (0, util_1.downloadFile)(productionS3CLIShaUrl, cliShaFileName);
             const generatedHash = (0, crypto_1.createHash)('sha256').update((0, fs_1.readFileSync)(cliRunnerFileName)).digest('hex');
-            console.log(`Generated hash ${generatedHash}`);
+            console.log(`Generated hash ${generatedHash.length}`);
             const fetchedHash = (0, fs_1.readFileSync)(cliShaFileName).toString('utf-8');
-            console.log(`fetched hash ${fetchedHash}`);
+            console.log(`fetched hash ${fetchedHash.length}`);
             if (String(generatedHash) !== String(fetchedHash)) {
                 return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`);
             }
