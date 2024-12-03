@@ -65,8 +65,11 @@ function run() {
             yield (0, util_1.downloadFile)(productionS3CLIShaUrl, cliShaFileName);
             const generatedHash = (0, crypto_1.createHash)('sha256').update((0, fs_1.readFileSync)(cliRunnerFileName)).digest('hex');
             console.log(`Generated hash ${generatedHash}`);
-            const fetchedHash = (0, fs_1.readFileSync)(cliShaFileName);
-            console.log(`Generated hash ${fetchedHash}`);
+            const fetchedHash = (0, fs_1.readFileSync)(cliShaFileName).toString('utf-8');
+            console.log(`fetched hash ${fetchedHash}`);
+            if (generatedHash !== fetchedHash) {
+                return core.setFailed(`Checksum failed`);
+            }
             const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
