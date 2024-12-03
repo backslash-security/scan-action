@@ -1,4 +1,4 @@
-# this auto compiles and commit the ts code
+# this auto compiles and commit the
 name: Compile typescript
 
 on:
@@ -37,6 +37,10 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           npm run build
-          git add dist/
-          git commit -m "Build: Update dist/ directory"
-          git push
+          if git diff then
+            git add dist/
+            git commit -m "Build: Update dist/ directory"
+            git push
+          else
+            echo "No changes to commit."
+          fi
