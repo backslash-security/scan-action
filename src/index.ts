@@ -63,9 +63,7 @@ async function run() {
         await downloadFile(productionS3CLIShaUrl, cliShaFileName)
 
         const generatedHash = createHash('sha256').update(readFileSync(cliRunnerFileName)).digest('hex').replace(' ', '').replace('\n', '').replace('\r', '')
-        console.log(`Generated hash ${generatedHash.length}`);
         const fetchedHash = readFileSync(cliShaFileName).toString('utf-8').replace(' ', '').replace('\n', '').replace('\r', '')
-        console.log(`fetched hash ${fetchedHash.length}`);
 
         if(String(generatedHash) !== String(fetchedHash)){
             return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`)
