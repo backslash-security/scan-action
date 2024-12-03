@@ -50,7 +50,14 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            echo "pushing to $GITHUB_REF"
+            # Determine the correct branch name
+            if [ "$GITHUB_HEAD_REF" != "" ]; then
+              branch_name="$GITHUB_HEAD_REF"
+            else
+              branch_name=$(echo "${GITHUB_REF#refs/heads/}")
+            fi
+            echo "Detected branch: $branch_name"
+
             git commit -m "Build: Update dist/ directory"
-            git push origin "$GITHUB_REF"
+            git push origin "$branch_name"
           fi
