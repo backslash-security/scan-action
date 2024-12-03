@@ -12,7 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = require("@actions/core");
 const github = require("@actions/github");
 const process = require("process");
+const fs_1 = require("fs");
+const crypto_1 = require("crypto");
 const child_process_1 = require("child_process");
+const util_1 = require("./util");
+const productionS3CLIUrl = 'https://s3.amazonaws.com/cli-bin.backslash.security/run-cli.sh';
+const productionS3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.backslash.security/run-cli.sh.sha256';
+const cliRunnerFileName = 'cli-runner.sh';
+const cliShaFileName = `${cliRunnerFileName}.sha256`;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -47,8 +54,15 @@ function run() {
             if (!disablePrComments) {
                 githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`;
             }
-            const command = `curl https://s3.amazonaws.com/cli-bin.backslash.security/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`;
-            const child = (0, child_process_1.spawn)('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
+            yield (0, util_1.downloadFile)(productionS3CLIUrl, cliRunnerFileName);
+            yield (0, util_1.downloadFile)(productionS3CLIShaUrl, cliShaFileName);
+            const generatedHash = (0, crypto_1.createHash)('sha256').update((0, fs_1.readFileSync)(cliRunnerFileName)).digest('hex').replace(' ', '').replace('\n', '').replace('\r', '');
+            const fetchedHash = (0, fs_1.readFileSync)(cliShaFileName).toString('utf-8').replace(' ', '').replace('\n', '').replace('\r', '');
+            if (String(generatedHash) !== String(fetchedHash)) {
+                return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`);
+            }
+            const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`;
+            const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
                 console.log(data.toString('utf8'));
             });

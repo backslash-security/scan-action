@@ -59,8 +59,3 @@ export enum ScmConnectorProvider {
     BitBucketOnPremise = 'bitbucket-on-premise',
     AzureRepos = 'azure-repos',
   }
-
-export enum FullOrDiff {
-    FULL = 'full',
-    DIFF = 'diff'
-}

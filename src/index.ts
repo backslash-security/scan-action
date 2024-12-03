@@ -1,14 +1,21 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as process from 'process';
+import { readFileSync } from 'fs'
+import { createHash } from 'crypto'
 
 import { spawn } from 'child_process';
+import { downloadFile } from './util';
 
+
+
+const productionS3CLIUrl = 'https://s3.amazonaws.com/cli-bin.backslash.security/run-cli.sh'
+const productionS3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.backslash.security/run-cli.sh.sha256'
+const cliRunnerFileName = 'cli-runner.sh'
+const cliShaFileName = `${cliRunnerFileName}.sha256`
 
 async function run() {
     try {
-
-
         const pr = github.context.payload.pull_request
         const isDebug = core.isDebug()
 
@@ -54,8 +61,19 @@ async function run() {
             githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`
         }
 
-        const command = `curl https://s3.amazonaws.com/cli-bin.backslash.security/run-cli.sh > "cli-runner.sh" && bash cli-runner.sh --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`
-        const child = spawn('bash', ['-c', command], { stdio: ['inherit', 'pipe', 'pipe'] });
+        await downloadFile(productionS3CLIUrl, cliRunnerFileName)
+        await downloadFile(productionS3CLIShaUrl, cliShaFileName)
+
+        const generatedHash = createHash('sha256').update(readFileSync(cliRunnerFileName)).digest('hex').replace(' ', '').replace('\n', '').replace('\r', '')
+        const fetchedHash = readFileSync(cliShaFileName).toString('utf-8').replace(' ', '').replace('\n', '').replace('\r', '')
+
+        if(String(generatedHash) !== String(fetchedHash)){
+            return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`)
+        }
+
+        const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`
+        
+        const child = spawn('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
 
         child.stdout.on('data', (data) => {
             console.log(data.toString('utf8'))

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FullOrDiff = exports.ScmConnectorProvider = exports.Severity = exports.PolicyCategory = exports.PolicyCI = void 0;
+exports.ScmConnectorProvider = exports.Severity = exports.PolicyCategory = exports.PolicyCI = void 0;
 var PolicyCI;
 (function (PolicyCI) {
     PolicyCI["BLOCK"] = "BLOCK";
@@ -33,8 +33,3 @@ var ScmConnectorProvider;
     ScmConnectorProvider["BitBucketOnPremise"] = "bitbucket-on-premise";
     ScmConnectorProvider["AzureRepos"] = "azure-repos";
 })(ScmConnectorProvider || (exports.ScmConnectorProvider = ScmConnectorProvider = {}));
-var FullOrDiff;
-(function (FullOrDiff) {
-    FullOrDiff["FULL"] = "full";
-    FullOrDiff["DIFF"] = "diff";
-})(FullOrDiff || (exports.FullOrDiff = FullOrDiff = {}));

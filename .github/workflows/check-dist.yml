@@ -1,0 +1,46 @@
+# this auto compiles and commit the typescript code
+name: Compile typescript
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  check-dist:
+    name: Check dist/
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all branches and history
+          ref: ${{ github.head_ref || github.ref_name }}
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+
+      - name: Install Dependencies
+        id: install
+        run: npm i && npm i -g @vercel/ncc
+
+      - name: Build and push
+        id: commit
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          npm run build
+          if git diff --quiet; then
+            echo "No changes to commit."
+          else
+            git add dist/
+            git commit -m "Build: Update dist/ directory"
+            git push
+          fi
