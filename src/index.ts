@@ -53,8 +53,6 @@ async function run() {
         if(repositoryName === undefined || sourceBranch === undefined){
             return core.setFailed('Repo or branch not defined')
         }
-        console.log(`Cli sha matches`);
-        
 
         let githubExtraInput = ''
         if(!disablePrComments){
@@ -70,6 +68,7 @@ async function run() {
         if(String(generatedHash) !== String(fetchedHash)){
             return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`)
         }
+        console.log(`Cli sha matches`);
 
         const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`
         
