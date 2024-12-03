@@ -16,7 +16,6 @@ on:
   push:
     branches:
       - main
-      - BAC-6078
 
 permissions:
   contents: read
@@ -45,7 +44,7 @@ jobs:
       - name: Build dist/ Directory
         id: build
         run: npm run build
-        
+
       # Update dist
       # workflow artifact.
       - if: ${{ failure() && steps.diff.outcome == 'failure' }}
