@@ -52,3 +52,4 @@ jobs:
           else
             git commit -m "Build: Update dist/ directory"
             git push origin HEAD
+          fi
