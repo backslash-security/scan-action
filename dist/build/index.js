@@ -61,6 +61,7 @@ function run() {
             if (String(generatedHash) !== String(fetchedHash)) {
                 return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`);
             }
+            console.log(`Cli sha matches`);
             const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
