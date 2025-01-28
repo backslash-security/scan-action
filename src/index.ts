@@ -9,8 +9,8 @@ import { downloadFile } from './util';
 
 
 
-const productionS3CLIUrl = 'https://s3.amazonaws.com/cli-bin.backslash.security/run-cli.sh'
-const productionS3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.backslash.security/run-cli.sh.sha256'
+const S3CLIUrl = 'https://s3.amazonaws.com/cli-test-bucket-2.446867341664'
+const S3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.446867341664'
 const cliRunnerFileName = 'cli-runner.sh'
 const cliShaFileName = `${cliRunnerFileName}.sha256`
 
@@ -59,8 +59,8 @@ async function run() {
             githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`
         }
 
-        await downloadFile(productionS3CLIUrl, cliRunnerFileName)
-        await downloadFile(productionS3CLIShaUrl, cliShaFileName)
+        await downloadFile(S3CLIUrl, cliRunnerFileName)
+        await downloadFile(S3CLIShaUrl, cliShaFileName)
 
         const generatedHash = createHash('sha256').update(readFileSync(cliRunnerFileName)).digest('hex').replace(' ', '').replace('\n', '').replace('\r', '')
         const fetchedHash = readFileSync(cliShaFileName).toString('utf-8').replace(' ', '').replace('\n', '').replace('\r', '')
