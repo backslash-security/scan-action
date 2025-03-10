@@ -24,7 +24,6 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const pr = github.context.payload.pull_request;
-            const isDebug = core.isDebug();
             let analyzedBranch;
             let baselineBranch = undefined;
             if (pr) {
@@ -45,10 +44,10 @@ function run() {
             const pushToDashboard = core.getBooleanInput('pushToDashboard');
             const githubToken = core.getInput('githubToken');
             console.log(process.env);
+            const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`;
             const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github';
             const repositoryName = github.context.payload.repository.name;
             const organization = github.context.payload.organization.login;
-            const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
             if (repositoryName === undefined || analyzedBranch === undefined) {
                 return core.setFailed('Repo or branch not defined');
             }
@@ -64,7 +63,7 @@ function run() {
                 return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`);
             }
             console.log(`Cli sha matches`);
-            const commonArgs = `--authToken=${authToken} --warnOnly=${ignoreBlock} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${repoNameWithoutOwner} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`;
+            const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly=${ignoreBlock}` : ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`;
             const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} --pushToDashboard=${pushToDashboard}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
