@@ -8,11 +8,10 @@ import { spawn } from 'child_process';
 import { downloadFile } from './util';
 
 
-
-const S3CLIUrl = 'https://s3.amazonaws.com/cli-test-bucket-2.446867341664/latest'
-const S3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.446867341664/latest'
 const cliRunnerFileName = 'run-cli.sh'
 const cliShaFileName = `${cliRunnerFileName}.sha256`
+const S3CLIUrl = `https://s3.amazonaws.com/cli-test-bucket-2.446867341664/latest/${cliRunnerFileName}`
+const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.446867341664/latest/${cliShaFileName}`
 
 async function run() {
     try {

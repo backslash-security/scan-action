@@ -23,10 +23,10 @@ const fs_1 = __nccwpck_require__(9896);
 const crypto_1 = __nccwpck_require__(6982);
 const child_process_1 = __nccwpck_require__(5317);
 const util_1 = __nccwpck_require__(8599);
-const S3CLIUrl = 'https://s3.amazonaws.com/cli-test-bucket-2.446867341664/latest';
-const S3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.446867341664/latest';
 const cliRunnerFileName = 'run-cli.sh';
 const cliShaFileName = `${cliRunnerFileName}.sha256`;
+const S3CLIUrl = `https://s3.amazonaws.com/cli-test-bucket-2.446867341664/latest/${cliRunnerFileName}`;
+const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.446867341664/latest/${cliShaFileName}`;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
