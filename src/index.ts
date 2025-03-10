@@ -16,7 +16,6 @@ const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.446867341664/latest/${cliS
 async function run() {
     try {
         const pr = github.context.payload.pull_request
-        const isDebug = core.isDebug()
 
         let analyzedBranch: string
         let baselineBranch: string | undefined = undefined
@@ -42,13 +41,14 @@ async function run() {
         const disablePrComments: boolean = core.getBooleanInput('disablePrComments');
         const pushToDashboard: boolean = core.getBooleanInput('pushToDashboard');
         const githubToken = core.getInput('githubToken')
-
+        console.log(process.env);
+        const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`
+        
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
 
         const repositoryName = github.context.payload.repository.name
 
         const organization: string = github.context.payload.organization.login
-        const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
 
         if(repositoryName === undefined || analyzedBranch === undefined){
             return core.setFailed('Repo or branch not defined')
@@ -70,7 +70,7 @@ async function run() {
         }
         console.log(`Cli sha matches`);
 
-        const commonArgs = `--authToken=${authToken} --warnOnly=${ignoreBlock} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
+        const commonArgs = `--authToken=${authToken} --warnOnly=${ignoreBlock} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
 
         const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} --pushToDashboard=${pushToDashboard}`
         

@@ -44,6 +44,7 @@ function run() {
             const disablePrComments = core.getBooleanInput('disablePrComments');
             const pushToDashboard = core.getBooleanInput('pushToDashboard');
             const githubToken = core.getInput('githubToken');
+            console.log(process.env);
             const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github';
             const repositoryName = github.context.payload.repository.name;
             const organization = github.context.payload.organization.login;
@@ -63,7 +64,7 @@ function run() {
                 return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`);
             }
             console.log(`Cli sha matches`);
-            const commonArgs = `--authToken=${authToken} --warnOnly=${ignoreBlock} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`;
+            const commonArgs = `--authToken=${authToken} --warnOnly=${ignoreBlock} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${repoNameWithoutOwner} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`;
             const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} --pushToDashboard=${pushToDashboard}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
