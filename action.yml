@@ -32,6 +32,11 @@ inputs:
     required: false
     type: boolean
     default: false
+  pushToDashboard:
+    description: 'Push results to dashboard'
+    required: false
+    type: boolean
+    default: false
   githubToken:
     description: 'Github auth token'
     required: false

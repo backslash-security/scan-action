@@ -19,15 +19,15 @@ async function run() {
         const pr = github.context.payload.pull_request
         const isDebug = core.isDebug()
 
-        let sourceBranch: string
-        let targetBranch: string | undefined = undefined
+        let analyzedBranch: string
+        let baselineBranch: string | undefined = undefined
 
         if(pr){
-          sourceBranch = pr.head.ref
-          targetBranch = pr.base.ref
+          analyzedBranch = pr.head.ref
+          baselineBranch = pr.base.ref
         }
         else{
-          sourceBranch = process.env.GITHUB_REF_NAME
+          analyzedBranch = process.env.GITHUB_REF_NAME
         }
 
         core.debug('STARTING')
@@ -38,9 +38,10 @@ async function run() {
 
         const ignoreBlock: boolean = core.getBooleanInput('ignoreBlock')
         const prScan: boolean = core.getBooleanInput('prScan');
-        const localExport: boolean = core.getBooleanInput('localExport');
+        const outputPath: string = core.getInput('outputPath');
         const isOnPremise: boolean = core.getBooleanInput('isOnPremise');
         const disablePrComments: boolean = core.getBooleanInput('disablePrComments');
+        const pushToDashboard: boolean = core.getBooleanInput('pushToDashboard');
         const githubToken = core.getInput('githubToken')
 
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
@@ -50,7 +51,7 @@ async function run() {
         const organization: string = github.context.payload.organization.login
         const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
 
-        if(repositoryName === undefined || sourceBranch === undefined){
+        if(repositoryName === undefined || analyzedBranch === undefined){
             return core.setFailed('Repo or branch not defined')
         }
 
@@ -70,7 +71,9 @@ async function run() {
         }
         console.log(`Cli sha matches`);
 
-        const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`
+        const commonArgs = `--authToken=${authToken} --warnOnly=${ignoreBlock} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
+
+        const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} --pushToDashboard=${pushToDashboard}`
         
         const child = spawn('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
 
