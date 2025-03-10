@@ -18,7 +18,7 @@ const child_process_1 = require("child_process");
 const util_1 = require("./util");
 const S3CLIUrl = 'https://s3.amazonaws.com/cli-test-bucket-2.446867341664/latest';
 const S3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.446867341664/latest';
-const cliRunnerFileName = 'cli-runner.sh';
+const cliRunnerFileName = 'run-cli.sh';
 const cliShaFileName = `${cliRunnerFileName}.sha256`;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
