@@ -16,8 +16,8 @@ const fs_1 = require("fs");
 const crypto_1 = require("crypto");
 const child_process_1 = require("child_process");
 const util_1 = require("./util");
-const S3CLIUrl = 'https://s3.amazonaws.com/cli-test-bucket-2.446867341664';
-const S3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.446867341664';
+const S3CLIUrl = 'https://s3.amazonaws.com/cli-test-bucket-2.446867341664/latest';
+const S3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.446867341664/latest';
 const cliRunnerFileName = 'cli-runner.sh';
 const cliShaFileName = `${cliRunnerFileName}.sha256`;
 function run() {
