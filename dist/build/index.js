@@ -43,7 +43,6 @@ function run() {
             const disablePrComments = core.getBooleanInput('disablePrComments');
             const pushToDashboard = core.getBooleanInput('pushToDashboard');
             const githubToken = core.getInput('githubToken');
-            console.log(process.env);
             const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`;
             const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github';
             const repositoryName = github.context.payload.repository.name;
