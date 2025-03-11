@@ -7,17 +7,14 @@ import { createHash } from 'crypto'
 import { spawn } from 'child_process';
 import { downloadFile } from './util';
 
-
-
-const productionS3CLIUrl = 'https://s3.amazonaws.com/cli-bin.backslash.security/run-cli.sh'
-const productionS3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.backslash.security/run-cli.sh.sha256'
-const cliRunnerFileName = 'cli-runner.sh'
+const cliRunnerFileName = 'run-cli.sh'
 const cliShaFileName = `${cliRunnerFileName}.sha256`
+const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/latest/${cliRunnerFileName}`
+const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/latest/${cliShaFileName}`
 
 async function run() {
     try {
         const pr = github.context.payload.pull_request
-        const isDebug = core.isDebug()
 
         let analyzedBranch: string
         let baselineBranch: string | undefined = undefined
@@ -43,13 +40,13 @@ async function run() {
         const disablePrComments: boolean = core.getBooleanInput('disablePrComments');
         const pushToDashboard: boolean = core.getBooleanInput('pushToDashboard');
         const githubToken = core.getInput('githubToken')
-
+        const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`
+        
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
 
         const repositoryName = github.context.payload.repository.name
 
         const organization: string = github.context.payload.organization.login
-        const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
 
         if(repositoryName === undefined || analyzedBranch === undefined){
             return core.setFailed('Repo or branch not defined')
@@ -60,8 +57,8 @@ async function run() {
             githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`
         }
 
-        await downloadFile(productionS3CLIUrl, cliRunnerFileName)
-        await downloadFile(productionS3CLIShaUrl, cliShaFileName)
+        await downloadFile(S3CLIUrl, cliRunnerFileName)
+        await downloadFile(S3CLIShaUrl, cliShaFileName)
 
         const generatedHash = createHash('sha256').update(readFileSync(cliRunnerFileName)).digest('hex').replace(' ', '').replace('\n', '').replace('\r', '')
         const fetchedHash = readFileSync(cliShaFileName).toString('utf-8').replace(' ', '').replace('\n', '').replace('\r', '')
@@ -71,9 +68,9 @@ async function run() {
         }
         console.log(`Cli sha matches`);
 
-        const commonArgs = `--authToken=${authToken} --warnOnly=${ignoreBlock} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
+        const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly`: ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
 
-        const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} --pushToDashboard=${pushToDashboard}`
+        const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`
         
         const child = spawn('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
 
