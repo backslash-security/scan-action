@@ -16,53 +16,54 @@ const fs_1 = require("fs");
 const crypto_1 = require("crypto");
 const child_process_1 = require("child_process");
 const util_1 = require("./util");
-const productionS3CLIUrl = 'https://s3.amazonaws.com/cli-bin.backslash.security/run-cli.sh';
-const productionS3CLIShaUrl = 'https://s3.amazonaws.com/cli-sha.backslash.security/run-cli.sh.sha256';
-const cliRunnerFileName = 'cli-runner.sh';
+const cliRunnerFileName = 'run-cli.sh';
 const cliShaFileName = `${cliRunnerFileName}.sha256`;
+const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/latest/${cliRunnerFileName}`;
+const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/latest/${cliShaFileName}`;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const pr = github.context.payload.pull_request;
-            const isDebug = core.isDebug();
-            let sourceBranch;
-            let targetBranch = undefined;
+            let analyzedBranch;
+            let baselineBranch = undefined;
             if (pr) {
-                sourceBranch = pr.head.ref;
-                targetBranch = pr.base.ref;
+                analyzedBranch = pr.head.ref;
+                baselineBranch = pr.base.ref;
             }
             else {
-                sourceBranch = process.env.GITHUB_REF_NAME;
+                analyzedBranch = process.env.GITHUB_REF_NAME;
             }
             core.debug('STARTING');
             const authToken = core.getInput('authToken');
             core.debug('auth token length ' + authToken.length);
             const ignoreBlock = core.getBooleanInput('ignoreBlock');
             const prScan = core.getBooleanInput('prScan');
-            const localExport = core.getBooleanInput('localExport');
+            const outputPath = core.getInput('outputPath');
             const isOnPremise = core.getBooleanInput('isOnPremise');
             const disablePrComments = core.getBooleanInput('disablePrComments');
+            const pushToDashboard = core.getBooleanInput('pushToDashboard');
             const githubToken = core.getInput('githubToken');
+            const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`;
             const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github';
             const repositoryName = github.context.payload.repository.name;
             const organization = github.context.payload.organization.login;
-            const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
-            if (repositoryName === undefined || sourceBranch === undefined) {
+            if (repositoryName === undefined || analyzedBranch === undefined) {
                 return core.setFailed('Repo or branch not defined');
             }
             let githubExtraInput = '';
             if (!disablePrComments) {
                 githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`;
             }
-            yield (0, util_1.downloadFile)(productionS3CLIUrl, cliRunnerFileName);
-            yield (0, util_1.downloadFile)(productionS3CLIShaUrl, cliShaFileName);
+            yield (0, util_1.downloadFile)(S3CLIUrl, cliRunnerFileName);
+            yield (0, util_1.downloadFile)(S3CLIShaUrl, cliShaFileName);
             const generatedHash = (0, crypto_1.createHash)('sha256').update((0, fs_1.readFileSync)(cliRunnerFileName)).digest('hex').replace(' ', '').replace('\n', '').replace('\r', '');
             const fetchedHash = (0, fs_1.readFileSync)(cliShaFileName).toString('utf-8').replace(' ', '').replace('\n', '').replace('\r', '');
             if (String(generatedHash) !== String(fetchedHash)) {
                 return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`);
             }
             console.log(`Cli sha matches`);
-            const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`;
+            const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly` : ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`;
+            const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
                 console.log(data.toString('utf8'));
