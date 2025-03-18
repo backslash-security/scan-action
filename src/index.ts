@@ -70,8 +70,9 @@ async function run() {
         }
         console.log(`Cli sha matches`);
 
-        const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport}`
-        
+        const customBackslashApi = ` --backslashAPI=https://platform.stage.backslash.security`
+        const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport} ${customBackslashApi}`
+                
         const child = spawn('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
 
         child.stdout.on('data', (data) => {
