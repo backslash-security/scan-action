@@ -25,8 +25,8 @@ const child_process_1 = __nccwpck_require__(5317);
 const util_1 = __nccwpck_require__(8599);
 const cliRunnerFileName = 'backslashctl-linux-x64';
 const cliShaFileName = `${cliRunnerFileName}.sha256`;
-const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/0.1.23/${cliRunnerFileName}`;
-const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/0.1.23/${cliShaFileName}`;
+const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/0.1.26/${cliRunnerFileName}`;
+const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/0.1.26/${cliShaFileName}`;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

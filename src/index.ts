@@ -9,8 +9,8 @@ import { downloadFile } from './util';
 
 const cliRunnerFileName = 'backslashctl-linux-x64'
 const cliShaFileName = `${cliRunnerFileName}.sha256`
-const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/0.1.23/${cliRunnerFileName}`
-const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/0.1.23/${cliShaFileName}`
+const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/0.1.26/${cliRunnerFileName}`
+const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/0.1.26/${cliShaFileName}`
 
 async function run() {
     try {
@@ -66,6 +66,7 @@ async function run() {
         if(String(generatedHash) !== String(fetchedHash)){
             return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`)
         }
+
         console.log(`Cli sha matches`);
 
         const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly`: ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
