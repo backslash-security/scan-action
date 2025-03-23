@@ -9,8 +9,8 @@ import { downloadFile } from './util';
 
 const cliRunnerFileName = 'run-cli.sh'
 const cliShaFileName = `${cliRunnerFileName}.sha256`
-const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/latest/${cliRunnerFileName}`
-const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/latest/${cliShaFileName}`
+const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/0.1.23/${cliRunnerFileName}`
+const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/0.1.23/${cliShaFileName}`
 
 async function run() {
     try {
