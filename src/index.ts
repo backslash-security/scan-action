@@ -7,7 +7,7 @@ import { createHash } from 'crypto'
 import { spawn } from 'child_process';
 import { downloadFile } from './util';
 
-const cliRunnerFileName = 'run-cli.sh'
+const cliRunnerFileName = 'backslashctl-linux-x64'
 const cliShaFileName = `${cliRunnerFileName}.sha256`
 const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/0.1.23/${cliRunnerFileName}`
 const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/0.1.23/${cliShaFileName}`
@@ -70,7 +70,7 @@ async function run() {
 
         const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly`: ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
 
-        const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`
+        const runCommand = `${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`
         
         const child = spawn('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
 

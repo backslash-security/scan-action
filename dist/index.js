@@ -23,7 +23,7 @@ const fs_1 = __nccwpck_require__(9896);
 const crypto_1 = __nccwpck_require__(6982);
 const child_process_1 = __nccwpck_require__(5317);
 const util_1 = __nccwpck_require__(8599);
-const cliRunnerFileName = 'run-cli.sh';
+const cliRunnerFileName = 'backslashctl-linux-x64';
 const cliShaFileName = `${cliRunnerFileName}.sha256`;
 const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security/0.1.23/${cliRunnerFileName}`;
 const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security/0.1.23/${cliShaFileName}`;
@@ -70,7 +70,7 @@ function run() {
             }
             console.log(`Cli sha matches`);
             const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly` : ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`;
-            const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`;
+            const runCommand = `${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`;
             const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
                 console.log(data.toString('utf8'));
