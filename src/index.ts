@@ -72,6 +72,9 @@ async function run() {
 
         const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`
         
+        core.debug(`pushToDashboard: ${pushToDashboard}`)
+        core.debug(`Running this command: runCommand`)
+
         const child = spawn('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
 
         child.stdout.on('data', (data) => {

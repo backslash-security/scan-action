@@ -64,6 +64,8 @@ function run() {
             console.log(`Cli sha matches`);
             const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly` : ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`;
             const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`;
+            core.debug(`pushToDashboard: ${pushToDashboard}`);
+            core.debug(`Running this command: runCommand`);
             const child = (0, child_process_1.spawn)('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
             child.stdout.on('data', (data) => {
                 console.log(data.toString('utf8'));
