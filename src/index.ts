@@ -17,17 +17,16 @@ const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.446867341664/latest/${cliS
 async function run() {
     try {
         const pr = github.context.payload.pull_request
-        const isDebug = core.isDebug()
 
-        let sourceBranch: string
-        let targetBranch: string | undefined = undefined
+        let analyzedBranch: string
+        let baselineBranch: string | undefined = undefined
 
         if(pr){
-          sourceBranch = pr.head.ref
-          targetBranch = pr.base.ref
+          analyzedBranch = pr.head.ref
+          baselineBranch = pr.base.ref
         }
         else{
-          sourceBranch = process.env.GITHUB_REF_NAME
+          analyzedBranch = process.env.GITHUB_REF_NAME
         }
 
         core.debug('STARTING')
@@ -38,19 +37,20 @@ async function run() {
 
         const ignoreBlock: boolean = core.getBooleanInput('ignoreBlock')
         const prScan: boolean = core.getBooleanInput('prScan');
-        const localExport: boolean = core.getBooleanInput('localExport');
+        const outputPath: string = core.getInput('outputPath');
         const isOnPremise: boolean = core.getBooleanInput('isOnPremise');
         const disablePrComments: boolean = core.getBooleanInput('disablePrComments');
+        const pushToDashboard: boolean = core.getBooleanInput('pushToDashboard');
         const githubToken = core.getInput('githubToken')
-
+        const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`
+        
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
 
         const repositoryName = github.context.payload.repository.name
 
         const organization: string = github.context.payload.organization.login
-        const repoNameWithoutOwner = repositoryName.split('/').length > 1 ? repositoryName.split('/').slice(1).join('/') : repositoryName;
 
-        if(repositoryName === undefined || sourceBranch === undefined){
+        if(repositoryName === undefined || analyzedBranch === undefined){
             return core.setFailed('Repo or branch not defined')
         }
 
@@ -70,8 +70,9 @@ async function run() {
         }
         console.log(`Cli sha matches`);
 
-        const customBackslashApi = ` --backslashAPI=https://platform.test.backslash.security`
-        const runCommand = `bash ${cliRunnerFileName} --authToken=${authToken} --ignoreBlock=${ignoreBlock} --prScan=${prScan} --sourceBranch=${sourceBranch} --repositoryName=${repoNameWithoutOwner} --provider=${provider} --organization=${organization} ${targetBranch && `--targetBranch=${targetBranch} `}--isDebug=${isDebug} ${githubExtraInput} --localExport=${localExport} ${customBackslashApi}`
+        const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly`: ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
+
+        const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`
         
         const child = spawn('bash', ['-c', runCommand], { stdio: ['inherit', 'pipe', 'pipe'] });
 
