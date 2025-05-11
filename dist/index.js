@@ -51,6 +51,7 @@ function run() {
             const pushToDashboard = core.getBooleanInput('pushToDashboard');
             const githubToken = core.getInput('githubToken');
             const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`;
+            const backslashApi = core.getInput('backslashApi');
             const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github';
             const repositoryName = github.context.payload.repository.name;
             const organization = github.context.payload.organization.login;
@@ -69,7 +70,7 @@ function run() {
                 return core.setFailed(`Checksum failed, got ${fetchedHash} but expected ${generatedHash}`);
             }
             console.log(`Cli sha matches`);
-            const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly` : ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`;
+            const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly` : ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath} --backslashAPI=${backslashApi}`;
             const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`;
             core.debug(`pushToDashboard: ${pushToDashboard}`);
             core.debug(`Running this command: ${runCommand}`);
