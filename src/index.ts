@@ -41,6 +41,7 @@ async function run() {
         const pushToDashboard: boolean = core.getBooleanInput('pushToDashboard');
         const githubToken = core.getInput('githubToken')
         const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`
+        const backslashApi = core.getInput('backslashApi')
         
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
 
@@ -68,7 +69,7 @@ async function run() {
         }
         console.log(`Cli sha matches`);
 
-        const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly`: ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath}`
+        const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly`: ''} --deltaScan=${prScan} --analyzedBranch=${analyzedBranch} --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch=${baselineBranch} `} ${githubExtraInput} --outputPath=${outputPath} --backslashAPI=${backslashApi}`
 
         const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`
         
