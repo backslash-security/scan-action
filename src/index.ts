@@ -58,6 +58,9 @@ async function run() {
         }
 
         await downloadFile(S3CLIUrl, cliRunnerFileName)
+        const content = readFileSync(cliRunnerFileName, 'utf-8')
+        console.log(`Content of the file: ${content}`);
+        
         await downloadFile(S3CLIShaUrl, cliShaFileName)
 
         const generatedHash = createHash('sha256').update(readFileSync(cliRunnerFileName)).digest('hex').replace(' ', '').replace('\n', '').replace('\r', '')

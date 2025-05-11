@@ -55,6 +55,8 @@ function run() {
                 githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`;
             }
             yield (0, util_1.downloadFile)(S3CLIUrl, cliRunnerFileName);
+            const content = (0, fs_1.readFileSync)(cliRunnerFileName, 'utf-8');
+            console.log(`Content of the file: ${content}`);
             yield (0, util_1.downloadFile)(S3CLIShaUrl, cliShaFileName);
             const generatedHash = (0, crypto_1.createHash)('sha256').update((0, fs_1.readFileSync)(cliRunnerFileName)).digest('hex').replace(' ', '').replace('\n', '').replace('\r', '');
             const fetchedHash = (0, fs_1.readFileSync)(cliShaFileName).toString('utf-8').replace(' ', '').replace('\n', '').replace('\r', '');
