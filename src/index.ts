@@ -79,7 +79,7 @@ async function run() {
         }
 
         if (localExport) {
-            analyzeArgs += ` --exportPath=Backslash-scan-results/`
+            analyzeArgs += ` --outputPath=Backslash-scan-results/`
         }
 
         if (pushToDashboard) {
