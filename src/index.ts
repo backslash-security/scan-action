@@ -1,8 +1,8 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { createHash } from 'crypto';
+import { readFileSync } from 'fs';
 import * as process from 'process';
-import { readFileSync } from 'fs'
-import { createHash } from 'crypto'
 
 import { spawn } from 'child_process';
 import { downloadFile } from './util';
@@ -39,9 +39,10 @@ async function run() {
         const isOnPremise: boolean = core.getBooleanInput('isOnPremise');
         const disablePrComments: boolean = core.getBooleanInput('disablePrComments');
         const pushToDashboard: boolean = core.getBooleanInput('pushToDashboard');
+        const localExport: boolean = core.getBooleanInput('localExport');
         const githubToken = core.getInput('githubToken')
         const cloneUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}.git`
-        
+
         const provider = isOnPremise ? 'github-enterprise-on-premise' : 'github'
 
         const repositoryName = github.context.payload.repository.name
@@ -50,11 +51,6 @@ async function run() {
 
         if(repositoryName === undefined || analyzedBranch === undefined){
             return core.setFailed('Repo or branch not defined')
-        }
-
-        let githubExtraInput = ''
-        if(!disablePrComments){
-            githubExtraInput = `--providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`
         }
 
         await downloadFile(S3CLIUrl, cliRunnerFileName)
@@ -68,10 +64,30 @@ async function run() {
         }
         console.log(`Cli sha matches`);
 
-        const commonArgs = `--authToken=${authToken} ${ignoreBlock ? `--warnOnly`: ''} --deltaScan=${prScan} --analyzedBranch="${analyzedBranch}" --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} ${baselineBranch && `--baselineBranch="${baselineBranch}" `} ${githubExtraInput} --outputPath=${outputPath}`
+        let analyzeArgs = `--authToken=${authToken} --deltaScan=${prScan} --analyzedBranch="${analyzedBranch}" --repositoryCloneUrl=${cloneUrl} --provider=${provider} --gitProviderOrganization=${organization} --outputPath=${outputPath}`
 
-        const runCommand = `bash ${cliRunnerFileName} analyze ${commonArgs} ${pushToDashboard ? `--pushToDashboard` : ''}`
-        
+        if(!disablePrComments){
+            analyzeArgs += ` --providerPrNumber=${github.context.issue.number} --providerAccessToken=${githubToken}`
+        }
+
+        if (baselineBranch) {
+            analyzeArgs += ` --baselineBranch="${baselineBranch}"`
+        }
+
+        if (ignoreBlock) {
+            analyzeArgs += ` --warnOnly`
+        }
+
+        if (localExport) {
+            analyzeArgs += ` --exportPath=Backslash-scan-results/ --exportFormat=json`
+        }
+
+        if (pushToDashboard) {
+            analyzeArgs += ` --pushToDashboard`
+        }
+
+        const runCommand = `bash ${cliRunnerFileName} analyze ${analyzeArgs}`
+
         core.debug(`pushToDashboard: ${pushToDashboard}`)
         core.debug(`Running this command: ${runCommand}`)
 
