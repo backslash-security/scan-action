@@ -70,7 +70,7 @@ function run() {
                 analyzeArgs += ` --warnOnly`;
             }
             if (localExport) {
-                analyzeArgs += ` --localExport`;
+                analyzeArgs += ` --outputPath=Backslash-scan-results/`;
             }
             if (pushToDashboard) {
                 analyzeArgs += ` --pushToDashboard`;
