@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Backslash scan step
-        uses: backslash-security/scan-action@david-fix-BAC-8006-local-export-fix
+        uses: backslash-security/scan-action@main
         with:
           authToken: ${{ env.API_KEY }}
           prScan: true
