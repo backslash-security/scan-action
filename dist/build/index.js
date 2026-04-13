@@ -20,7 +20,6 @@ const cliRunnerFileName = 'run-cli.sh';
 const cliShaFileName = `${cliRunnerFileName}.sha256`;
 const S3CLIUrl = `https://s3.amazonaws.com/cli-bin.backslash.security.599430794766/latest/${cliRunnerFileName}`;
 const S3CLIShaUrl = `https://s3.amazonaws.com/cli-sha.backslash.security.599430794766/latest/${cliShaFileName}`;
-
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
